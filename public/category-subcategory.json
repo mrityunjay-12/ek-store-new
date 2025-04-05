@@ -1,0 +1,54 @@
+[
+    {
+      "category": "Clothing",
+      "image": "cloth.png",
+      "subcategories": [
+        "Tops",
+        "Bottoms",
+        "Shirts",
+        "Dresses",
+        "Jackets",
+        "Trousers",
+        "Matching Sets"
+      ]
+    },
+    {
+      "category": "Footwear",
+      "image": "footwear.png",
+      "subcategories": ["Running Shoes", "Sneakers", "Loafers"]
+    },
+    {
+      "category": "Accessories",
+      "image": "bag.png",
+      "subcategories": ["Caps", "Belts", "Handbags"]
+    },
+    {
+      "category": "Beauty",
+      "image": "bea.png",
+      "subcategories": ["Makeup", "Skincare", "Fragrance"]
+    },
+    {
+      "category": "Mens",
+      "image": "men.png",
+      "subcategories": ["T-Shirts", "Jeans", "Formals"]
+    },
+    {
+        "category": "Women",
+        "subcategories": [
+          { "name": "New Arrivals", "image": "/product1.png" },
+          { "name": "Dresses", "image": "/product2.png" },
+          { "name": "Transitional Jackets", "image": "/product1.png" },
+          { "name": "Tops", "image": "/product2.png" },
+          { "name": "Jeans & Denim", "image": "/product1.png" },
+          { "name": "Matching Sets", "image": "/product2.png" },
+          { "name": "Swimwear", "image": "/product1.png" },
+          { "name": "Maternity", "image": "/product2.png" }
+        ]
+      },
+    {
+      "category": "Discount",
+      "image": "dis.png",
+      "subcategories": ["Flat 50%", "Buy 1 Get 1", "Clearance Sale"]
+    }
+  ]
+  

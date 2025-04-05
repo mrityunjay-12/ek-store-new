@@ -1,0 +1,33 @@
+[
+    {
+      "id": "1",
+      "name": "Cotton T-Shirt",
+      "price": 499,
+      "image": "/images/tshirt.jpg",
+      "category_id": "men",
+      "sub_category_id": "tops",
+      "isNew": true,
+      "isHot": false
+    },
+    {
+      "id": "2",
+      "name": "Denim Jeans",
+      "price": 899,
+      "image": "/images/jeans.jpg",
+      "category_id": "men",
+      "sub_category_id": "bottoms",
+      "isNew": false,
+      "isHot": true
+    },
+    {
+      "id": "3",
+      "name": "Lipstick",
+      "price": 299,
+      "image": "/images/lipstick.jpg",
+      "category_id": "beauty",
+      "sub_category_id": "makeup",
+      "isNew": true,
+      "isHot": false
+    }
+  ]
+  
