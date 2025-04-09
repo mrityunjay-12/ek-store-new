@@ -13,6 +13,8 @@ import Signup from "./pages/SignUp";
 import Footer from "./components/Footer";
 import Wishlist from "@/pages/Wishlist";
 import ScrollToTop from "./components/ScrollToTop";
+import UserAccount from "./pages/UserAccount";
+
 
 
 export default function App() {
@@ -29,7 +31,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/wishlist" element={<Wishlist />} />
-
+        <Route path="/profile" element={<UserAccount />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/products" element={<ProductListing />} />

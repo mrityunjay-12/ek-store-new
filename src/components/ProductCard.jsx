@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
-import toast, { Toaster } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 
 export default function ProductCard({ product, minimal = false }) {
   const { user } = useSelector((state) => state.user);
@@ -80,7 +80,7 @@ export default function ProductCard({ product, minimal = false }) {
       if (!res.ok) throw new Error(data.message || "Wishlist failed");
 
       setWishlisted(true);
-      toast.success("Added to Wishlist 💖");
+      toast.success("Added to Wishlist!");
     } catch (err) {
       toast.error(`Wishlist failed: ${err.message}`);
       console.error("❌ Wishlist failed:", err);
@@ -93,7 +93,7 @@ export default function ProductCard({ product, minimal = false }) {
         onClick={handleCardClick}
         className="group relative shadow-sm overflow-hidden hover:shadow-md transition cursor-pointer h-full flex flex-col"
       >
-        <Toaster position="top-center" reverseOrder={false} />
+        <Toaster position="center" />
 
         {/* Wishlist Icon */}
         {!minimal && (

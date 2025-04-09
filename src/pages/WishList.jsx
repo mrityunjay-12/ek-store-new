@@ -100,9 +100,28 @@ export default function Wishlist() {
       </h2>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="text-center text-sm text-gray-500">Loading...</p>
       ) : items.length === 0 ? (
-        <p>No items in wishlist.</p>
+        <div className="text-center py-20">
+          <h2 className="text-xl font-bold text-gray-800">
+            YOUR WISHLIST IS EMPTY
+          </h2>
+          <p className="text-sm text-gray-500 mt-2">
+            Add items that you like to your wishlist. Review them anytime and
+            easily move them to the bag.
+          </p>
+          <img
+            src="/wishlist.jpg" // ✅ replace this with actual path to the empty image
+            alt="empty"
+            className="mx-auto my-8 w-32 h-32 object-contain"
+          />
+          <a
+            href="/"
+            className="inline-block border border-[#723248] px-6 py-3 text-[#723248] font-semibold text-sm rounded hover:bg-[#f7e8ed]"
+          >
+            CONTINUE SHOPPING
+          </a>
+        </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           {items.map((item) => {
@@ -122,7 +141,7 @@ export default function Wishlist() {
                   className="absolute top-2 right-2 bg-white p-1 rounded-full shadow hover:bg-gray-100"
                   onClick={() => removeItem(item._id)}
                 >
-                  <X className="w-4 h-4" color="#723248" />
+                  <X className="w-4 h-4 bg-[#f7e8ed]" color="#723248" />
                 </button>
 
                 <img
@@ -159,7 +178,7 @@ export default function Wishlist() {
 
                   <Button
                     variant="outline"
-                    className="w-full mt-2 text-sm font-semibold "
+                    className="w-full mt-2 text-sm font-semibold bg-[#723248] text-white"
                     onClick={() => handleMoveToBag(item)}
                   >
                     Move to Bag

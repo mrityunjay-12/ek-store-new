@@ -1,14 +1,6 @@
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import {
-  Menu,
-  Heart,
-  ShoppingBag,
-  Globe,
-  User2,
-  Search,
-  Mic,
-} from "lucide-react";
+import { Menu, Heart, ShoppingBag, User2, Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "@/redux/slices/userSlice";
@@ -25,6 +17,9 @@ export default function Navbar() {
   const [hoveredCat, setHoveredCat] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+ const cartItems = useSelector((state) => state.cart?.items || []);
+ const wishlistItems = useSelector((state) => state.wishlist?.items || []);
+
 
   useEffect(() => {
     const allowedCategories = [
@@ -93,14 +88,9 @@ export default function Navbar() {
     }
   }, [searchQuery, categories]);
 
-  // const handleLogout = () => {
-  //   dispatch(logout());
-  //   window.location.reload();
-  // };
-
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
-      {/* Top Bar */}
+      {/* Mobile Topbar */}
       <div className="hidden md:flex justify-end px-4 pt-2 gap-4 text-xs font-medium">
         {!user ? (
           <>
@@ -112,73 +102,151 @@ export default function Navbar() {
               SIGN UP
             </Link>
           </>
-        ) : (
-          <div className="relative">
-            {/* <button
-              className="text-sm text-gray-700 hover:text-[#5b2338]"
-              onClick={() => setDropdown(!dropdown)}
-            >
-              {user.name?.split(" ")[0]}
-            </button> */}
-            {/* {dropdown && (
-              <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-50">
-                <Link
-                  to="/profile"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Profile
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Logout
-                </button>
-              </div>
-            )} */}
-          </div>
-        )}
+        ) : null}
       </div>
 
-      {/* Main Navbar */}
-      <div className="container flex flex-col md:flex-row md:items-center justify-between px-4 md:px-8 py-2 gap-2">
-        {/* Left: Logo + Mobile Menu */}
-        <div className="flex items-center justify-between md:justify-start gap-4 w-full md:w-auto">
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-64 bg-white">
-              <div className="mt-10 space-y-4">
-                <div className="mt-10 space-y-4">
+      {/* ===================== MOBILE NAV ===================== */}
+      <div className="flex md:hidden flex-col px-4 py-2 gap-2">
+        <div className="flex items-center justify-between">
+          {/* Left - Hamburger & Logo */}
+          <div className="flex items-center gap-2">
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="left"
+                className="w-64 bg-white flex flex-col justify-between"
+              >
+                <div className="mt-10">
                   {categories.map((cat) => (
-                    <Link
-                      key={cat.name}
-                      to={`/${cat.name.toLowerCase().replace(/\s+/g, "-")}`}
-                      className="block text-base font-medium text-gray-800 hover:text-black px-4 py-2"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {cat.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+                    <div key={cat.name} className="border-b">
+                      <button
+                        className="w-full text-left px-4 py-2 font-medium text-gray-800 hover:bg-gray-100"
+                        onClick={() =>
+                          setHoveredCat(
+                            hoveredCat?.name === cat.name ? null : cat
+                          )
+                        }
+                      >
+                        {cat.name}
+                      </button>
 
-          <Link to="/" className="text-2xl font-bold text-purple-900">
-            <img
-              src="/logo.png"
-              alt="ek"
-              className="h-10 w-auto px-4 md:px-0"
-            />
-          </Link>
+                      {hoveredCat?.name === cat.name &&
+                        cat.subs?.length > 0 && (
+                          <div className="px-6 py-2 space-y-2">
+                            {cat.subs.map((group, idx) => (
+                              <div key={idx}>
+                                <h4 className="text-sm font-semibold text-purple-700 mb-1">
+                                  {group.groupTitle}
+                                </h4>
+                                <ul className="space-y-1 text-sm text-gray-700">
+                                  {group.items.map((item, i) => (
+                                    <li key={i}>
+                                      <Link
+                                        to={`/products?subcategory=${encodeURIComponent(
+                                          item
+                                        )}`}
+                                        className="hover:underline"
+                                        onClick={() => setIsOpen(false)}
+                                      >
+                                        {item}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                    </div>
+                  ))}
+                  <Link
+                    to="/blog"
+                    className="block px-4 py-2 mt-4 text-base font-medium text-gray-800 hover:text-black"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Blog
+                  </Link>
+                </div>
+
+                <div className="p-4 border-t">
+                  {!user ? (
+                    <div className="space-y-2">
+                      <Link
+                        to="/login"
+                        className="block text-sm font-medium text-blue-600"
+                      >
+                        Sign In
+                      </Link>
+                      <Link
+                        to="/signup"
+                        className="block text-sm text-gray-700"
+                      >
+                        Sign Up
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-gray-800">
+                        {user.name}
+                      </p>
+                      <Link
+                        to="/profile"
+                        className="block text-sm text-gray-700 hover:underline"
+                      >
+                        Profile
+                      </Link>
+                      <button
+                        onClick={() => {
+                          dispatch(logout());
+                          window.location.reload();
+                        }}
+                        className="block text-sm text-left text-gray-700 hover:underline"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            <Link to="/" className="text-2xl font-bold text-purple-900">
+              <img src="/logo.png" alt="ek" className="h-10 w-auto" />
+            </Link>
+          </div>
+
+          {/* Right Icons */}
+          <div className="flex items-center gap-2">
+            <Link to="/wishlist" className="relative">
+              <Button variant="ghost" size="icon" className="relative">
+                <Heart className="w-7 h-7 text-gray-700" />
+                {wishlistItems.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">
+                    {wishlistItems.length}
+                  </span>
+                )}
+              </Button>
+            </Link>
+
+            <Link to="/cart" className="relative">
+              <Button variant="ghost" size="icon" className="relative">
+                <ShoppingBag className="w-7 h-7 text-gray-700" />
+                {cartItems.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">
+                    {cartItems.length}
+                  </span>
+                )}
+              </Button>
+            </Link>
+          </div>
         </div>
 
-        {/* Mobile Search Bar */}
-        <div className="block md:hidden w-full px-1">
+        {/* Mobile Search */}
+        <div className="w-full px-1">
           <div className="flex items-center border rounded-full px-3 py-1.5 shadow-sm bg-white">
             <Search className="w-4 h-4 text-gray-400" />
             <input
@@ -188,7 +256,6 @@ export default function Navbar() {
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
             />
-            {/* <Mic className="w-4 h-4 text-gray-400" /> */}
           </div>
           {searchFocused && (
             <SearchDropdown
@@ -197,70 +264,72 @@ export default function Navbar() {
             />
           )}
         </div>
+      </div>
 
-        {/* Center Nav Links */}
-        <nav className="hidden md:flex flex-wrap justify-center flex-1 space-x-6 relative">
-          {categories.map((cat) => (
+      {/* ===================== DESKTOP NAV ===================== */}
+      <div className="hidden md:flex items-center justify-between px-8 py-2">
+        {/* Logo */}
+        <Link to="/" className="mr-6">
+          <img src="/logo.png" alt="ek" className="h-10 w-auto" />
+        </Link>
+
+        {/* Category Links */}
+        <nav className="flex space-x-6 items-center relative">
+          {categories.map((cat) => {
+            const isActive = hoveredCat?.name === cat.name;
+            return (
+              <div key={cat.name} className="relative">
+                <button
+                  onClick={() => setHoveredCat(isActive ? null : cat)}
+                  className={`text-sm font-medium transition ${
+                    cat.name.toLowerCase() === "sale"
+                      ? "text-red-500 font-semibold"
+                      : isActive
+                      ? "text-black border-b-2 border-purple-600"
+                      : "text-gray-700 hover:text-black"
+                  }`}
+                >
+                  {cat.name}
+                </button>
+              </div>
+            );
+          })}
+
+          {/* Dropdown */}
+          {hoveredCat?.subs?.length > 0 && (
             <div
-              key={cat.name}
-              className="relative group"
-              onMouseEnter={() => setHoveredCat(cat)}
+              className="absolute top-full left-[-80px] mt-2 p-6 bg-white shadow-lg border z-50 min-w-[600px] grid grid-cols-3 gap-8 rounded-md"
               onMouseLeave={() => setHoveredCat(null)}
             >
-              <Link
-                to={`/${cat.name.toLowerCase().replace(/\s+/g, "-")}`}
-                className={`text-sm font-medium ${
-                  cat.name.toLowerCase() === "sale"
-                    ? "text-red-500 font-semibold"
-                    : "text-gray-700 hover:text-black"
-                }`}
-              >
-                {cat.name}
-              </Link>
-              {hoveredCat?.name === cat.name && hoveredCat.subs?.length > 0 && (
-                <div
-                  onMouseEnter={() => setHoveredCat(cat)}
-                  onMouseLeave={() => setHoveredCat(null)}
-                  className="absolute top-full left-0 mt-2 p-6 bg-white shadow-lg border z-50 w-[900px] grid grid-cols-3 gap-8 rounded-md"
-                >
-                  {hoveredCat.subs.map((sub, i) => (
-                    <div key={i}>
-                      <h4 className="text-[15px] font-semibold text-[#d6336c] mb-2">
-                        {sub.groupTitle || "Collection"}
-                      </h4>
-                      <ul className="space-y-1 text-[14px] text-gray-700">
-                        {sub.items.map((item, idx) => (
-                          <li key={idx}>
-                            <Link
-                              to={`/products?subcategory=${encodeURIComponent(
-                                item
-                              )}`}
-                              className="hover:underline block"
-                            >
-                              {item}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
+              {hoveredCat.subs.map((sub, i) => (
+                <div key={i}>
+                  <h4 className="text-[15px] font-semibold text-[#d6336c] mb-2">
+                    {sub.groupTitle}
+                  </h4>
+                  <ul className="space-y-1 text-[14px] text-gray-700">
+                    {sub.items.map((item, idx) => (
+                      <li key={idx}>
+                        <Link
+                          to={`/products?subcategory=${encodeURIComponent(
+                            item
+                          )}`}
+                          className="hover:underline block"
+                          onClick={() => setHoveredCat(null)}
+                        >
+                          {item}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              )}
+              ))}
             </div>
-          ))}
+          )}
         </nav>
 
-        {/* Right Actions */}
-        {/* Right Actions */}
-        <div className="flex items-center space-x-3 relative mt-2 md:mt-0">
-          <Link to="/blog">
-            <Button variant="outline" size="sm">
-              Blog
-            </Button>
-          </Link>
-
-          {/* Search (Desktop) */}
-          <div className="relative hidden md:block w-[340px]">
+        {/* Search + Icons */}
+        <div className="flex items-center space-x-4">
+          <div className="w-[420px] relative">
             <div className="flex items-center border rounded-full px-3 py-1.5 shadow-sm bg-white">
               <Search className="w-4 h-4 text-gray-400" />
               <input
@@ -273,7 +342,6 @@ export default function Navbar() {
                 onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
               />
             </div>
-
             {searchFocused && filteredSuggestions.length > 0 && (
               <div className="absolute w-full bg-white border rounded shadow-md mt-1 z-50 max-h-60 overflow-auto">
                 {filteredSuggestions.map((suggestion, index) => (
@@ -285,8 +353,8 @@ export default function Navbar() {
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={() => setSearchQuery("")}
                   >
-                    {suggestion.item}{" "}
-                    <span className="text-xs text-gray-500">
+                    {suggestion.item}
+                    <span className="text-xs text-gray-500 ml-2">
                       ({suggestion.category})
                     </span>
                   </Link>
@@ -295,23 +363,16 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Icons */}
           <Link to="/wishlist">
             <Button variant="ghost" size="icon">
-              <Heart className="w-5 h-5 text-gray-700" />
+              <Heart className="w-6 h-6 text-gray-700" />
             </Button>
           </Link>
-
-          {/* <Button variant="ghost" size="icon">
-            <Globe className="w-5 h-5 text-gray-700" />
-          </Button> */}
           <Link to="/cart">
             <Button variant="ghost" size="icon">
-              <ShoppingBag className="w-5 h-5 text-gray-700" />
+              <ShoppingBag className="w-6 h-6 text-gray-700" />
             </Button>
           </Link>
-
-          {/* 👤 Profile Dropdown */}
           {user && (
             <div className="relative">
               <Button
@@ -320,7 +381,7 @@ export default function Navbar() {
                 onClick={() => setDropdown(!dropdown)}
                 className="rounded-full bg-gray-100 hover:bg-gray-200 border"
               >
-                <User2 className="w-5 h-5 text-gray-700" />
+                <User2 className="w-6 h-6 text-gray-700" />
               </Button>
               {dropdown && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50 p-2">

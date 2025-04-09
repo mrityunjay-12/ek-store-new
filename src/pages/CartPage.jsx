@@ -1,18 +1,22 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tag } from "lucide-react";
 import CouponModal from "@/components/cartPage/CouponModal";
+import { FinalCart, setCoupon } from "@/redux/slices/cartSlice";
+import { toast } from "react-hot-toast";
 
 export default function CartPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const [cartItems, setCartItems] = useState([]);
+  
   const [showCouponModal, setShowCouponModal] = useState(false);
-  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const appliedCoupon = useSelector((state) => state.cart.coupon);
 
   useEffect(() => {
     if (!user || !user._id) {
@@ -28,6 +32,7 @@ export default function CartPage() {
             selected: true,
           })) || [];
         setCartItems(items);
+        dispatch(FinalCart(items));
       })
       .catch((err) => console.error("Failed to load cart:", err));
   }, [user]);
@@ -38,11 +43,13 @@ export default function CartPage() {
         `https://estylishkart.el.r.appspot.com/api/cart/item/update/${cartItemId}`,
         { quantity: Number(qty) }
       );
-      setCartItems((prev) =>
-        prev.map((item) =>
+      setCartItems((prev) => {
+        const updated = prev.map((item) =>
           item._id === cartItemId ? { ...item, quantity: Number(qty) } : item
-        )
-      );
+        );
+        dispatch(FinalCart(updated));
+        return updated;
+      });
     } catch (err) {
       console.error("Update quantity failed", err);
     }
@@ -53,9 +60,52 @@ export default function CartPage() {
       await axios.delete(
         `https://estylishkart.el.r.appspot.com/api/cart/remove/${cartItemId}`
       );
-      setCartItems((prev) => prev.filter((item) => item._id !== cartItemId));
+      setCartItems((prev) => {
+        const updated = prev.filter((item) => item._id !== cartItemId);
+        dispatch(FinalCart(updated));
+        return updated;
+      });
     } catch (err) {
       console.error("Remove item failed", err);
+    }
+  };
+
+  const moveToWishlist = async (item) => {
+    if (!user || !user._id) {
+      navigate("/login");
+      return;
+    }
+
+    const productId = item.product?._id;
+    const variantId = item.product?.product_variant?._id;
+
+    if (!productId || !variantId) {
+      toast.error("Missing product/variant ID");
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        "https://estylishkart.el.r.appspot.com/api/wishlist",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: user._id,
+            product_id: productId,
+            variant_id: variantId,
+          }),
+        }
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+
+      toast.success("Moved to Wishlist");
+
+      await removeItem(item._id); // Also removes from cart
+    } catch (err) {
+      console.error("Move to wishlist failed:", err);
+      toast.error("Failed to move to Wishlist");
     }
   };
 
@@ -67,33 +117,30 @@ export default function CartPage() {
     );
   };
 
+  const handleCheckout = () => navigate("/checkout");
+  const handleGoToWishlist = () => navigate("/wishlist");
+
   const selectedItems = cartItems.filter((item) => item.selected);
   const subtotal = selectedItems.reduce(
     (sum, item) =>
       sum + (item.product.product_variant?.price ?? 0) * item.quantity,
     0
   );
-
   const totalMrp = selectedItems.reduce(
     (sum, item) =>
       sum + (item.product.product_variant?.compare_price ?? 0) * item.quantity,
     0
   );
-
   const discount = totalMrp - subtotal;
   const couponDiscount = appliedCoupon?.discountAmount || 0;
   const finalTotal = subtotal - couponDiscount;
-
-  const handleCheckout = () => {
-    navigate("/checkout");
-  };
 
   return (
     <>
       <CouponModal
         isOpen={showCouponModal}
         onClose={() => setShowCouponModal(false)}
-        onApply={(coupon) => setAppliedCoupon(coupon)}
+        onApply={(coupon) => dispatch(setCoupon(coupon))}
         cartTotal={subtotal}
       />
 
@@ -125,9 +172,6 @@ export default function CartPage() {
                   <h3 className="text-sm font-semibold">
                     {item.product.product_name}
                   </h3>
-                  {/* <p className="text-xs text-gray-500 mb-2">
-                    Product ID: {item.product.product_id}
-                  </p> */}
 
                   <div className="flex gap-4 mb-2">
                     <div>
@@ -172,14 +216,19 @@ export default function CartPage() {
 
                   <div className="text-xs text-[#723248] mt-2 flex gap-4">
                     <button onClick={() => removeItem(item._id)}>REMOVE</button>
-                    <button>MOVE TO WISHLIST</button>
+                    <button onClick={() => moveToWishlist(item)}>
+                      MOVE TO WISHLIST
+                    </button>
                   </div>
                 </div>
               </CardContent>
             </Card>
           ))}
 
-          <div className="text-sm text-[#723248] underline cursor-pointer mt-2">
+          <div
+            className="text-sm text-[#723248] underline cursor-pointer mt-2"
+            onClick={handleGoToWishlist}
+          >
             Add More From Wishlist
           </div>
         </div>

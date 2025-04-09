@@ -1,210 +1,254 @@
 import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import { useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom"; // ✅ import useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Navbar from "@/components/Navbar";
+import { toast, Toaster } from "react-hot-toast";
+import { useSwipeable } from "react-swipeable";
 import Footer from "@/components/Footer";
-import { toast, Toaster } from "react-hot-toast"; // for notifications
 
 export default function ProductDetailPage() {
   const { productId } = useParams();
-  const navigate = useNavigate(); // ✅ initialize navigate
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
+
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedFit, setSelectedFit] = useState("True to Size");
   const [addingToBag, setAddingToBag] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+
+  const variant = product?.product_variants?.[0];
+  const allImages = [variant?.image, ...(variant?.gallery_image || [])];
+
+  const colors =
+    variant?.attributes
+      ?.filter((attr) => attr.attribute_name === "Color")
+      .map((attr) => attr.attribute_value) || [];
+
+  const sizes = product?.product_variants
+    ?.map(
+      (v) =>
+        v.attributes?.find((a) => a.attribute_name === "Size")?.attribute_value
+    )
+    .filter((v, i, arr) => arr.indexOf(v) === i);
+
+  useEffect(() => {
+    if (productId) {
+      const fetchProduct = async () => {
+        try {
+          const res = await axios.get(
+            `https://estylishkart.el.r.appspot.com/api/products/${productId}`
+          );
+          const data = res.data?.data;
+
+          setProduct(data);
+          setSelectedSize(
+            data?.product_variants?.[0]?.attributes?.find(
+              (attr) => attr.attribute_name === "Size"
+            )?.attribute_value
+          );
+        } catch (err) {
+          console.error("Error fetching product:", err);
+        }
+      };
+
+      fetchProduct();
+    }
+  }, [productId]);
+
+  useEffect(() => {
+    setSelectedImage(allImages[selectedIndex]);
+  }, [selectedIndex, allImages]);
+
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => {
+      if (selectedIndex < allImages.length - 1)
+        setSelectedIndex((prev) => prev + 1);
+    },
+    onSwipedRight: () => {
+      if (selectedIndex > 0) setSelectedIndex((prev) => prev - 1);
+    },
+    trackMouse: true,
+  });
 
   const handleAddToWishlist = async () => {
-    if (!user || !user._id) {
-      navigate("/login");
-      return;
-    }
-
-    const variantId = product?.product_variants?.[0]?._id;
-
-    if (!product?._id || !variantId) {
-      toast.error("Missing Product or Variant ID");
-      return;
-    }
+    if (!user || !user._id) return navigate("/login");
 
     try {
       const res = await fetch(
         "https://estylishkart.el.r.appspot.com/api/wishlist",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             user_id: user._id,
             product_id: product._id,
-            variant_id: variantId,
+            variant_id: variant._id,
           }),
         }
       );
-
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       toast.success("Added to Wishlist!");
-    } catch (err) {
+    } catch {
       toast.error("Wishlist failed");
-      console.error("Wishlist error:", err);
     }
+    
   };
 
   const handleAddToBag = async () => {
-    if (!user || !user._id) {
-      navigate("/login");
-      return;
-    }
+    if (!user || !user._id) return navigate("/login");
 
-    const variantId = product?.product_variants?.[0]?._id;
-
-    if (!variantId || !selectedSize) {
-      toast.error("Please select a size");
-      return;
-    }
+    if (!selectedSize) return toast.error("Please select a size");
 
     try {
       setAddingToBag(true);
-
       const res = await fetch(
         "https://estylishkart.el.r.appspot.com/api/cart/add",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             user_id: user._id,
             product_id: product._id,
-            variant_id: variantId,
+            variant_id: variant._id,
             quantity: 1,
             size: selectedSize,
           }),
         }
       );
-
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
 
       toast.success("Added to cart!");
-
-      // Wait a moment for the toast, then redirect
-      setTimeout(() => {
-        navigate("/cart");
-      }, 1000);
-    } catch (err) {
-      toast.error("Add to cart failed");
-      console.error(err);
-    } finally {
+      setTimeout(() => navigate("/cart"), 1000);
+    } catch {
+      toast.error("Wishlist failed");
+    }
+     finally {
       setAddingToBag(false);
     }
   };
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const res = await axios.get(
-          `https://estylishkart.el.r.appspot.com/api/products/${productId}`
-        );
-        const data = res.data?.data;
-
-        setProduct(data);
-        setSelectedSize(
-          data?.product_variants?.[0]?.attributes?.find(
-            (attr) => attr.attribute_name === "Size"
-          )?.attribute_value
-        );
-        setSelectedImage(
-          data?.product_variants?.[0]?.image ||
-            data?.product_variants?.[0]?.gallery_image?.[0]
-        );
-      } catch (error) {
-        console.error("Error fetching product:", error);
-      }
-    };
-
-    if (productId) fetchProduct();
-  }, [productId]);
-
   if (!product) return <div className="p-10">Loading...</div>;
-
-  const variant = product.product_variants?.[0];
-  const colors =
-    variant?.attributes
-      ?.filter((attr) => attr.attribute_name === "Color")
-      .map((attr) => attr.attribute_value) || [];
-
-  const sizes = product.product_variants
-    ?.map(
-      (v) =>
-        v.attributes?.find((a) => a.attribute_name === "Size")?.attribute_value
-    )
-    .filter((v, i, arr) => arr.indexOf(v) === i); // Unique sizes
 
   return (
     <>
-      {/* <Navbar /> */}
       <Toaster position="center" />
-
       <div className="bg-[#723248] text-white text-sm text-center py-2 px-4 font-semibold">
         Sub Categories
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* LEFT COLUMN - Images */}
+        {/* LEFT: Images */}
         <div>
-          <img
-            src={selectedImage}
-            alt={product.product_name}
-            className="w-full object-cover rounded-md"
-          />
-          <div className="mt-4 flex gap-2">
-            {[variant?.image, ...(variant?.gallery_image || [])].map(
-              (img, idx) => (
-                <img
-                  key={idx}
-                  src={img}
-                  alt={`Gallery ${idx}`}
-                  className={`w-20 h-20 object-cover rounded border cursor-pointer ${
-                    selectedImage === img ? "border-black" : "border-gray-300"
-                  }`}
-                  onClick={() => setSelectedImage(img)}
-                />
-              )
-            )}
+          {/* Main image */}
+          <div
+            className="w-full h-[400px] sm:h-[500px] bg-white border rounded-md flex items-center justify-center cursor-pointer"
+            onClick={() => setShowPopup(true)}
+            {...swipeHandlers}
+          >
+            <img
+              src={selectedImage}
+              alt="Product"
+              className="max-h-full max-w-full object-contain"
+            />
           </div>
+
+          {/* Thumbnails below (max 5) */}
+          <div className="mt-4 flex gap-3 overflow-hidden">
+            {allImages.slice(0, 5).map((img, idx) => (
+              <img
+                key={idx}
+                src={img}
+                alt={`Thumb ${idx}`}
+                onClick={() => {
+                  setSelectedIndex(idx);
+                }}
+                className={`h-20 w-20 rounded border object-contain cursor-pointer ${
+                  selectedIndex === idx ? "border-black" : "border-gray-300"
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Popup full viewer */}
+          {showPopup && (
+            <div
+              className="fixed inset-0 bg-black bg-opacity-80 z-50 flex flex-col sm:flex-row"
+              onClick={() => setShowPopup(false)}
+            >
+              {/* Sidebar thumbnails */}
+              <div
+                className="sm:h-full sm:w-24 w-full sm:overflow-y-auto flex sm:flex-col flex-row gap-2 p-2 bg-black bg-opacity-60"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {allImages.map((img, idx) => (
+                  <img
+                    key={idx}
+                    src={img}
+                    alt={`Popup Thumb ${idx}`}
+                    onClick={() => setSelectedIndex(idx)}
+                    className={`h-16 w-16 object-contain rounded cursor-pointer border ${
+                      selectedIndex === idx
+                        ? "border-white"
+                        : "border-transparent"
+                    }`}
+                  />
+                ))}
+              </div>
+
+              {/* Main swipeable image */}
+              <div
+                className="flex-grow flex items-center justify-center p-4"
+                onClick={(e) => e.stopPropagation()}
+                {...swipeHandlers}
+              >
+                <img
+                  src={selectedImage}
+                  alt="Zoom"
+                  className="max-h-[90%] max-w-[90%] object-contain"
+                />
+                <button
+                  onClick={() => setShowPopup(false)}
+                  className="absolute top-4 right-4 text-white bg-black bg-opacity-50 p-2 rounded-full text-xl"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* RIGHT COLUMN - Details */}
+        {/* RIGHT: Info */}
         <div>
           <h1 className="text-2xl font-semibold mb-2">
             {product.product_name}
           </h1>
+
           <p className="text-xl font-medium mb-1">
-            ₹{variant?.price}{" "}
+            ₹{variant?.price}
             {variant?.compare_price > variant?.price && (
-              <span className="text-base text-gray-500 line-through ml-2">
-                ₹{variant.compare_price}
-              </span>
-            )}{" "}
-            {variant?.compare_price > variant?.price && (
-              <span className="text-sm font-semibold text-red-600 ml-2">
-                {Math.round(
-                  ((variant.compare_price - variant.price) /
-                    variant.compare_price) *
-                    100
-                )}
-                % OFF
-              </span>
+              <>
+                <span className="text-base text-gray-500 line-through ml-2">
+                  ₹{variant.compare_price}
+                </span>
+                <span className="text-sm font-semibold text-red-600 ml-2">
+                  {Math.round(
+                    ((variant.compare_price - variant.price) /
+                      variant.compare_price) *
+                      100
+                  )}
+                  % OFF
+                </span>
+              </>
             )}
           </p>
 
-          {/* Color */}
+          {/* Colors */}
           {colors.length > 0 && (
             <div className="mb-4">
               <p className="text-sm font-medium text-gray-700 mb-1">COLOR</p>
@@ -220,19 +264,16 @@ export default function ProductDetailPage() {
             </div>
           )}
 
-          {/* Size */}
+          {/* Sizes */}
           {sizes.length > 0 && (
             <>
               <div className="mb-4 flex justify-between items-center">
                 <p className="text-sm font-medium text-gray-700">SIZE</p>
-                <a
-                  href="#"
-                  className="text-xs underline font-medium text-gray-700"
-                >
+                <span className="text-xs underline font-medium text-gray-700">
                   FIND YOUR FIT
-                </a>
+                </span>
               </div>
-              <div className="flex gap-2 mb-4">
+              <div className="flex gap-2 mb-4 flex-wrap">
                 {sizes.map((size) => (
                   <button
                     key={size}
@@ -250,7 +291,7 @@ export default function ProductDetailPage() {
             </>
           )}
 
-          {/* Fit Feedback */}
+          {/* Fit Selection */}
           <div className="grid grid-cols-3 text-xs text-gray-600 border mb-4 cursor-pointer">
             {["Runs Small", "True to Size", "Runs Large"].map((fit) => (
               <div
@@ -267,7 +308,7 @@ export default function ProductDetailPage() {
             ))}
           </div>
 
-          {/* Buttons */}
+          {/* Add to Cart & Wishlist */}
           <div className="grid gap-2 mb-6">
             <button
               onClick={handleAddToBag}
@@ -277,8 +318,8 @@ export default function ProductDetailPage() {
             </button>
 
             <button
-              className="border text-sm px-6 py-3 font-medium w-full flex items-center justify-center gap-2 text-gray-700"
               onClick={handleAddToWishlist}
+              className="border text-sm px-6 py-3 font-medium w-full flex items-center justify-center gap-2 text-gray-700"
             >
               <Heart className="w-4 h-4" /> ADD TO WISHLIST
             </button>
@@ -294,59 +335,9 @@ export default function ProductDetailPage() {
               dangerouslySetInnerHTML={{ __html: product.description }}
             />
           </details>
-
-          <details className="border-b py-2">
-            <summary className="font-medium text-sm cursor-pointer">
-              SIZING
-            </summary>
-            <p className="text-sm text-gray-600 mt-2">
-              Check the sizing guide for more details.
-            </p>
-          </details>
-
-          <details className="border-b py-2">
-            <summary className="font-medium text-sm cursor-pointer">
-              FAST & EASY 30 DAY RETURNS
-            </summary>
-            <p className="text-sm text-gray-600 mt-2">
-              We offer hassle-free returns on all orders.
-            </p>
-          </details>
-          {/* Complete the Look */}
-
-          <h4 className="text-base font-semibold mb-4 mt-6">
-            COMPLETE THE LOOK
-          </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-            {(
-              product.complementaryItems || [
-                {
-                  id: "1",
-                  name: "JASMINE BRACELET · PEARL",
-                  price: 299,
-                  image: "/product2.png",
-                },
-                {
-                  id: "2",
-                  name: "SHELLY HAIR CLIP · GOLD",
-                  price: 600,
-                  image: "/product2.png",
-                },
-              ]
-            ).map((item) => (
-              <div key={item.id} className="p-3 text-center hover:transition">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-60 object-cover rounded mb-3"
-                />
-                <p className="text-sm font-medium text-gray-800">{item.name}</p>
-                <p className="text-sm text-gray-600">₹{item.price}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
+
       <Footer />
     </>
   );
