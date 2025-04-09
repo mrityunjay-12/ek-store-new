@@ -35,8 +35,8 @@ export default function CategorySlider() {
   };
 
   return (
-    <section className="py-6 bg-white relative">
-      <div className="max-w-4xl mx-auto px-4 relative mb-4 mt-7">
+    <section className="py-1 bg-white relative">
+      <div className="max-w-4xl mx-auto px-4 relative mb-1 mt-1 ">
         {/* Left Arrow */}
         <button
           onClick={() => scroll("left")}
@@ -48,7 +48,7 @@ export default function CategorySlider() {
         {/* Scrollable Container */}
         <div
           ref={scrollRef}
-          className="flex justify-start gap-6 overflow-x-auto px-10 hide-scrollbar"
+          className="flex justify-start gap-0 overflow-x-auto px-10 hide-scrollbar"
         >
           {categories.map((cat, index) => (
             <div
@@ -65,7 +65,7 @@ export default function CategorySlider() {
                     : "/icons/men.png"
                 }
                 alt={cat.category_name}
-                className="w-20 h-20 object-cover rounded-lg border shadow"
+                className="top-1/2 w-20 h-20 object-cover rounded-lg border shadow"
               />
               <span className="text-xs mt-1 font-medium text-gray-700">
                 {cat.category_name}

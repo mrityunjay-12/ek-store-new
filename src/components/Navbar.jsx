@@ -20,7 +20,7 @@ export default function Navbar() {
  const cartItems = useSelector((state) => state.cart?.items || []);
  const wishlistItems = useSelector((state) => state.wishlist?.items || []);
 
-
+// all categories 
   useEffect(() => {
     const allowedCategories = [
       "Women",
@@ -34,6 +34,7 @@ export default function Navbar() {
       "Accessories",
     ];
 
+    //api fetch
     fetch("https://estylishkart.el.r.appspot.com/api/product-categories")
       .then((res) => res.json())
       .then((data) => {
@@ -68,6 +69,8 @@ export default function Navbar() {
       .catch((err) => console.error("Category fetch failed:", err));
   }, []);
 
+
+  
   useEffect(() => {
     if (searchQuery.trim()) {
       const suggestions = [];
@@ -328,9 +331,9 @@ export default function Navbar() {
         </nav>
 
         {/* Search + Icons */}
-        <div className="flex items-center space-x-4">
-          <div className="w-[420px] relative">
-            <div className="flex items-center border rounded-full px-3 py-1.5 shadow-sm bg-white">
+        <div className="flex items-center space-x-3 flex-shrink-0">
+          <div className="w-[320px] relative">
+            <div className="flex items-center border rounded-full px-3 py-1 bg-white">
               <Search className="w-4 h-4 text-gray-400" />
               <input
                 type="text"

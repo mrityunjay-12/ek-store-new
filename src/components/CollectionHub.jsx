@@ -23,9 +23,9 @@ export default function CollectionHub() {
   }, []);
 
   return (
-    <section className="py-10 bg-white mb-5">
-      <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+    <section className=" bg-white mb-5">
+      <div className="max-w-6xl mx-auto px-3">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-2 text-center">
           COLLECTION HUB
         </h2>
 

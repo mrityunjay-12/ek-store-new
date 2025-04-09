@@ -74,16 +74,16 @@ export default function Home() {
 
       {/* for coupon */}
       {/* Coupon Banners */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full  px-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full  px-1">
         <img
           src="/offer.png"
           alt="Offer Coupon"
-          className="w-full h-auto sm:h-56 object-contain rounded-lg "
+          className="w-full h-3 sm:h-56 object-contain rounded-lg "
         />
         <img
           src="/offer.png"
           alt="Offer Coupon"
-          className="w-full h-auto sm:h-56 object-contain rounded-lg  hidden sm:block"
+          className="w-full h-3 sm:h-56 object-contain rounded-lg  hidden sm:block"
         />
         {/* <img
           src="/offer.png"
@@ -98,7 +98,7 @@ export default function Home() {
       <img
           src="/offer.png"
           alt="Offer Coupon"
-          className="w-full h-auto sm:h-56 object-contain rounded-lg"
+          className="w-full h-auto sm:h-56 object-fill rounded-lg"
         />
       </div>
       <ProductCarousel title="Kids" products={kidsProducts} />

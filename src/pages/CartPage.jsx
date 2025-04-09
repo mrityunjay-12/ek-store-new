@@ -70,19 +70,8 @@ export default function CartPage() {
     }
   };
 
-  const moveToWishlist = async (item) => {
-    if (!user || !user._id) {
-      navigate("/login");
-      return;
-    }
-
-    const productId = item.product?._id;
-    const variantId = item.product?.product_variant?._id;
-
-    if (!productId || !variantId) {
-      toast.error("Missing product/variant ID");
-      return;
-    }
+  const moveToWishlist = async () => {
+    if (!user || !user._id) return navigate("/login");
 
     try {
       const res = await fetch(
@@ -91,22 +80,19 @@ export default function CartPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            user_id: user._id,
-            product_id: productId,
-            variant_id: variantId,
+            user_id: user._id,           
+            product_id: user.product._id, 
+            variant_id: user.product.product_variant._id,
           }),
         }
       );
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-
-      toast.success("Moved to Wishlist");
-
-      await removeItem(item._id); // Also removes from cart
-    } catch (err) {
-      console.error("Move to wishlist failed:", err);
-      toast.error("Failed to move to Wishlist");
+      toast.success("Added to Wishlist!");
+    } catch {
+      toast.error("Wishlist failed");
     }
+    
   };
 
   const toggleSelect = (cartItemId) => {

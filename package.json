@@ -7,7 +7,8 @@
     "dev": "cross-env PORT=5175 vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "rm -rf node_modules/rollup && npm install rollup"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
@@ -28,6 +29,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.4.1",
     "react-swipeable": "^7.0.2",
+    "rollup": "^3.29.4",
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.1.0",
     "tailwindcss-animate": "^1.0.7"

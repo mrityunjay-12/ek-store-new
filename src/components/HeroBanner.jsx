@@ -25,12 +25,12 @@ export default function HeroBanner() {
 
   return (
     <section className="relative w-full bg-white overflow-hidden">
-      <div className="w-full h-full transition-all duration-500 sm:h-[600px]">
+      <div className="w-full h-full transition-all duration-500 sm:h-[435px]">
         {/* Image */}
         <img
           src={images[currentIndex]}
           alt={`Slide ${currentIndex + 1}`}
-          className="w-full h-auto object-cover sm:object-cover transition-all duration-500"
+          className="w-full h-auto object-contain sm:object-cover transition-all duration-500"
         />
 
         {/* Prev Button */}
