@@ -1,24 +1,24 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
 export default function SubCategoryPills({ selected, onSelect }) {
-  const [data, setData] = useState([])
-  const [activeCategory, setActiveCategory] = useState("Clothing")
+  const [data, setData] = useState([]);
+  const [activeCategory, setActiveCategory] = useState("Clothing");
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch("/data/category-subcategory.json")
-        const json = await res.json()
-        setData(json)
+        const res = await fetch("/data/category-subcategory.json");
+        const json = await res.json();
+        setData(json);
       } catch (err) {
-        console.error("Failed to load categories:", err)
+        console.error("Failed to load categories:", err);
       }
-    }
+    };
 
-    fetchCategories()
-  }, [])
+    fetchCategories();
+  }, []);
 
-  const current = data.find((cat) => cat.category === activeCategory)
+  const current = data.find((cat) => cat.category === activeCategory);
 
   return (
     <div className="mb-6">
@@ -63,5 +63,5 @@ export default function SubCategoryPills({ selected, onSelect }) {
         </div>
       )}
     </div>
-  )
+  );
 }
