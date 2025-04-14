@@ -2,7 +2,8 @@ import FilterSidebar from "@/components/FilterSidebar";
 // import RecentlyViewed from "@/components/RecentlyViewed";
 import ProductGrid from "@/components/productList/ProductGrid";
 import PaginationControls from "@/components/productList/PaginationControls";
-import SubCategoryPills from "@/components/SubCategoryPills";
+// import SubCategoryPills from "@/components/SubCategoryPills";
+import SubCategoryPill from "@/components/SubCategoryPill";
 // import SubCategoryPills from "@/components/SubCategoryPills";
 
 export default function ProductListingLayout({
@@ -26,7 +27,7 @@ export default function ProductListingLayout({
 
       {/* Main Product Grid */}
       <main className="flex-1 p-4">
-        <SubCategoryPills selected={selectedSub} onSelect={setSelectedSub} />
+        <SubCategoryPill selected={selectedSub} onSelect={setSelectedSub} />
 
         {loading ? (
           <div className="flex justify-center items-center min-h-[300px]">
