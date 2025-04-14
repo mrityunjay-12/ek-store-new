@@ -2,7 +2,9 @@ import FilterSidebar from "@/components/FilterSidebar";
 // import RecentlyViewed from "@/components/RecentlyViewed";
 import ProductGrid from "@/components/productList/ProductGrid";
 import PaginationControls from "@/components/productList/PaginationControls";
-import SubCategoryPills from "../../components/SubCategoryPills";
+import SubCategoryPills from "../SubCategoryPills";
+// import SubCategoryPills from "@/components/SubCategoryPills";
+
 export default function ProductListingLayout({
   filters,
   setFilters,
@@ -57,11 +59,10 @@ export default function ProductListingLayout({
           <>
             <ProductGrid products={visibleProducts} />
             <PaginationControls
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={onPageChange}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={onPageChange}
             />
-
           </>
         )}
       </main>
