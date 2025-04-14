@@ -6,6 +6,7 @@ import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
 import { useSwipeable } from "react-swipeable";
 import Footer from "@/components/Footer";
+import Breadcrumb from "@/components/Breadcrumb";
 
 export default function ProductDetailPage() {
   const { productId } = useParams();
@@ -134,13 +135,19 @@ export default function ProductDetailPage() {
   };
 
   if (!product) return <div className="p-10">Loading...</div>;
+ 
 
   return (
     <>
-      <Toaster position="center" />
-      <div className="bg-[#723248] text-white text-sm text-center py-2 px-4 font-semibold">
+      {/* <Toaster position="center" /> */}
+      <Breadcrumb
+      category={product.categories?.[0]?.category_name || "All Products"}
+      subcategory={product.product_name}
+    />
+      
+      {/* <div className="bg-[#723248] text-white text-sm text-center py-2 px-4 font-semibold">
         Sub Categories
-      </div>
+      </div> */}
 
       <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* LEFT: Images */}
@@ -335,10 +342,61 @@ export default function ProductDetailPage() {
               dangerouslySetInnerHTML={{ __html: product.description }}
             />
           </details>
+
+          <details className="border-b py-2">
+             <summary className="font-medium text-sm cursor-pointer">
+               SIZING
+             </summary>
+             <p className="text-sm text-gray-600 mt-2">
+               Check the sizing guide for more details.
+             </p>
+           </details>
+          
+           <details className="border-b py-2">
+             <summary className="font-medium text-sm cursor-pointer">
+               FAST & EASY 30 DAY RETURNS
+             </summary>
+             <p className="text-sm text-gray-600 mt-2">
+               We offer hassle-free returns on all orders.
+             </p>
+           </details>
+
+           <h4 className="text-base font-semibold mb-4 mt-6">
+             COMPLETE THE LOOK
+           </h4>
+           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+             {(
+               product.complementaryItems || [
+                 {
+                   id: "1",
+                   name: "JASMINE BRACELET · PEARL",
+                   price: 299,
+                   image: "/product2.png",
+                 },
+                 {
+                   id: "2",
+                   name: "SHELLY HAIR CLIP · GOLD",
+                   price: 600,
+                   image: "/product2.png",
+                 },
+               ]
+             ).map((item) => (
+               <div key={item.id} className="p-3 text-center hover:transition">
+                 <img
+                   src={item.image}
+                   alt={item.name}
+                   className="w-full h-60 object-cover rounded mb-3"
+                 />
+                 <p className="text-sm font-medium text-gray-800">{item.name}</p>
+                 <p className="text-sm text-gray-600">₹{item.price}</p>
+               </div>
+             ))}
+           </div>
+          
+         
         </div>
       </div>
 
-      <Footer />
     </>
   );
 }

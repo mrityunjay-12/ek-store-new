@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-export default function Wishlist() {
+export default function WishList() {
   const { user } = useSelector((state) => state.user);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const fetchWishlist = async () => {
     try {
@@ -82,12 +84,14 @@ export default function Wishlist() {
       await removeItem(item._id);
       toast.success("Moved to Bag!");
     } catch (err) {
-      toast.error("Could not move to bag.");
+      toast.error("Could not move to bag.", err);
     }
   };
 
   useEffect(() => {
-    if (user?._id) {
+    if (!user?._id) {
+      navigate("/login");
+    } else {
       fetchWishlist();
     }
   }, [user]);
@@ -95,7 +99,7 @@ export default function Wishlist() {
   return (
     <div className="max-w-[1440px] mx-auto px-4 py-6">
       <h2 className="text-lg font-semibold mb-4">
-        My <span className="text-pink-600">Wishlist</span>{" "}
+        My <span className="text-[#723248]">Wishlist</span>{" "}
         <span className="text-sm text-gray-500">({items.length} items)</span>
       </h2>
 
@@ -128,26 +132,26 @@ export default function Wishlist() {
             const product = item.product || {};
             const variant = item.variant || {};
             const image = variant.image || "/placeholder.jpg";
-            const gallery = variant.gallery_image || [];
+            // const gallery = variant.gallery_image || [];
             const price = variant.price || 0;
             const compare = variant.compare_price || 0;
 
             return (
               <div
                 key={item._id}
-                className="border rounded-2xl shadow-sm relative hover:shadow-md transition"
+                className="border shadow-sm relative hover:shadow-md transition"
               >
                 <button
                   className="absolute top-2 right-2 bg-white p-1 rounded-full shadow hover:bg-gray-100"
                   onClick={() => removeItem(item._id)}
                 >
-                  <X className="w-4 h-4 bg-[#f7e8ed]" color="#723248" />
+                  <X className="w-4 h-4 " color="#723248" />
                 </button>
 
                 <img
                   src={image}
                   alt={product?.product_name}
-                  className="w-full h-60 object-cover rounded-t-2xl"
+                  className="w-full h-60 object-contain rounded-t-2xl"
                 />
 
                 <div className="p-3 space-y-2">

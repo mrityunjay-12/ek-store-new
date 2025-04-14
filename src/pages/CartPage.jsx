@@ -2,27 +2,28 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tag } from "lucide-react";
-import CouponModal from "@/components/cartPage/CouponModal";
-import { FinalCart, setCoupon } from "@/redux/slices/cartSlice";
 import { toast } from "react-hot-toast";
+
+import CouponModal from "@/components/cartPage/CouponModal";
+import CartOperations from "@/components/cartPage/CartOperations";
+import CartSummary from "@/components/cartPage/CartSummary";
+import { FinalCart, setCoupon } from "@/redux/slices/cartSlice";
 
 export default function CartPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
-  const [cartItems, setCartItems] = useState([]);
-  
-  const [showCouponModal, setShowCouponModal] = useState(false);
   const appliedCoupon = useSelector((state) => state.cart.coupon);
+
+  const [cartItems, setCartItems] = useState([]);
+  const [showCouponModal, setShowCouponModal] = useState(false);
 
   useEffect(() => {
     if (!user || !user._id) {
       navigate("/login");
       return;
     }
+
     axios
       .get(`https://estylishkart.el.r.appspot.com/api/cart/user/${user._id}`)
       .then((res) => {
@@ -70,7 +71,29 @@ export default function CartPage() {
     }
   };
 
-  const moveToWishlist = async () => {
+  //   if (!user || !user._id) return navigate("/login");
+
+  //   try {
+  //     const res = await fetch(
+  //       "https://estylishkart.el.r.appspot.com/api/wishlist",
+  //       {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({
+  //           user_id: user._id,
+  //           product_id: user.product._id,
+  //           variant_id: user.product.product_variant._id,
+  //         }),
+  //       }
+  //     );
+  //     const data = await res.json();
+  //     if (!res.ok) throw new Error(data.message);
+  //     toast.success("Added to Wishlist!");
+  //   } catch {
+  //     toast.error("Wishlist failed");
+  //   }
+  // };
+  const moveToWishlist = async (item) => {
     if (!user || !user._id) return navigate("/login");
 
     try {
@@ -80,19 +103,24 @@ export default function CartPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            user_id: user._id,           
-            product_id: user.product._id, 
-            variant_id: user.product.product_variant._id,
+            user_id: user._id,
+            product_id: item.product.product_id,
+            variant_id: item.variant_id,
           }),
         }
       );
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
+
       toast.success("Added to Wishlist!");
-    } catch {
-      toast.error("Wishlist failed");
+
+      // Optionally remove from cart after moving to wishlist:
+      removeItem(item._id);
+    } catch (err) {
+      toast.error("Failed to move to wishlist");
+      console.error(err);
     }
-    
   };
 
   const toggleSelect = (cartItemId) => {
@@ -112,181 +140,84 @@ export default function CartPage() {
       sum + (item.product.product_variant?.price ?? 0) * item.quantity,
     0
   );
-  const totalMrp = selectedItems.reduce(
-    (sum, item) =>
-      sum + (item.product.product_variant?.compare_price ?? 0) * item.quantity,
-    0
-  );
-  const discount = totalMrp - subtotal;
-  const couponDiscount = appliedCoupon?.discountAmount || 0;
-  const finalTotal = subtotal - couponDiscount;
+  const totalMrp = selectedItems.reduce((sum, item) => {
+    const comparePrice =
+      item.compare_price ?? item.product.product_variant?.compare_price ?? 0;
+    return sum + comparePrice * item.quantity;
+  }, 0);
+
+  const discount = selectedItems.reduce((sum, item) => {
+    const compare =
+      item.compare_price ?? item.product.product_variant?.compare_price ?? 0;
+    const price = item.price ?? item.product.product_variant?.price ?? 0;
+    return sum + (compare - price) * item.quantity;
+  }, 0);
+
+  const couponDiscount = appliedCoupon ? appliedCoupon.discount_value : 0;
+
+  const finalTotal = totalMrp - discount - couponDiscount;
+  function EmptyCart({ onGoToWishlist }) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20">
+        <img
+          src="/cart-image.png" // or use a hosted image URL
+          alt="Empty Cart"
+          className="w-32 h-32 mb-6"
+        />
+        <h2 className="text-xl font-semibold text-gray-800 mb-2">
+          Hey, it feels so light!
+        </h2>
+        <p className="text-gray-500 mb-6">
+          There is nothing in your bag. Let's add some items.
+        </p>
+        <button
+          onClick={onGoToWishlist}
+          className="px-6 py-2 border font-semibold rounded hover:bg-pink-50 transition border-[#723248] px-6 py-3 text-[#723248]"
+        >
+          ADD ITEMS FROM WISHLIST
+        </button>
+      </div>
+    );
+  }
 
   return (
     <>
-      <CouponModal
-        isOpen={showCouponModal}
-        onClose={() => setShowCouponModal(false)}
-        onApply={(coupon) => dispatch(setCoupon(coupon))}
-        cartTotal={subtotal}
-      />
+      {cartItems.length === 0 ? (
+        <EmptyCart onGoToWishlist={handleGoToWishlist} />
+      ) : (
+        <>
+          <CouponModal
+            isOpen={showCouponModal}
+            onClose={() => setShowCouponModal(false)}
+            onApply={(coupon) => dispatch(setCoupon(coupon))}
+            cartTotal={subtotal}
+          />
 
-      <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* LEFT: Items */}
-        <div className="md:col-span-2">
-          <h2 className="text-lg font-bold mb-4 text-[#723248]">
-            {selectedItems.length}/{cartItems.length} ITEMS SELECTED
-          </h2>
+          <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* LEFT: Cart Items */}
+            <CartOperations
+              cartItems={cartItems}
+              toggleSelect={toggleSelect}
+              updateQty={updateQty}
+              removeItem={removeItem}
+              moveToWishlist={moveToWishlist}
+              onGoToWishlist={handleGoToWishlist}
+            />
 
-          {cartItems.map((item) => (
-            <Card key={item._id} className="mb-4">
-              <CardContent className="p-4 flex gap-4">
-                <input
-                  type="checkbox"
-                  checked={item.selected}
-                  onChange={() => toggleSelect(item._id)}
-                  className="mt-8"
-                />
-                <img
-                  src={item.product.product_variant.image || "/placeholder.jpg"}
-                  alt={item.product.product_name}
-                  className="w-24 h-28 object-cover rounded"
-                />
-                <div className="flex-1">
-                  <p className="text-xs font-medium text-gray-600">
-                    {item.product.product_type || "Type"}
-                  </p>
-                  <h3 className="text-sm font-semibold">
-                    {item.product.product_name}
-                  </h3>
-
-                  <div className="flex gap-4 mb-2">
-                    <div>
-                      <label className="text-xs font-medium text-gray-600">
-                        Qty:
-                      </label>
-                      <select
-                        className="border text-xs rounded px-2 py-1 ml-2"
-                        value={item.quantity}
-                        onChange={(e) => updateQty(item._id, e.target.value)}
-                      >
-                        {[1, 2, 3, 4, 5].map((qty) => (
-                          <option key={qty} value={qty}>
-                            {qty}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="font-semibold">
-                      ₹{item.product.product_variant.price}
-                    </span>
-                    <span className="text-gray-500 line-through text-xs">
-                      ₹{item.product.product_variant.compare_price}
-                    </span>
-                    <span className="text-green-600 text-xs font-medium">
-                      {Math.round(
-                        ((item.product.product_variant.compare_price -
-                          item.product.product_variant.price) /
-                          item.product.product_variant.compare_price) *
-                          100
-                      )}
-                      % OFF
-                    </span>
-                  </div>
-
-                  <p className="text-xs text-gray-500 mt-1">
-                    14 days return available
-                  </p>
-
-                  <div className="text-xs text-[#723248] mt-2 flex gap-4">
-                    <button onClick={() => removeItem(item._id)}>REMOVE</button>
-                    <button onClick={() => moveToWishlist(item)}>
-                      MOVE TO WISHLIST
-                    </button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-
-          <div
-            className="text-sm text-[#723248] underline cursor-pointer mt-2"
-            onClick={handleGoToWishlist}
-          >
-            Add More From Wishlist
+            {/* RIGHT: Summary */}
+            <CartSummary
+              selectedItems={selectedItems}
+              totalMrp={totalMrp}
+              discount={discount}
+              couponDiscount={couponDiscount}
+              finalTotal={finalTotal}
+              appliedCoupon={appliedCoupon}
+              onCheckoutClick={handleCheckout}
+              onCouponClick={() => setShowCouponModal(true)}
+            />
           </div>
-        </div>
-
-        {/* RIGHT: Summary */}
-        <Card>
-          <CardContent className="p-4 space-y-4">
-            <div className="space-y-1">
-              <h4 className="text-sm font-bold">COUPONS</h4>
-              <div
-                className="flex justify-between items-center cursor-pointer"
-                onClick={() => setShowCouponModal(true)}
-              >
-                <div className="flex items-center gap-2 text-sm font-medium text-[#723248]">
-                  <Tag className="w-4 h-4" />
-                  Apply Coupons
-                </div>
-                <button className="text-sm font-semibold text-[#723248] border border-[#723248] px-4 py-1 rounded">
-                  APPLY
-                </button>
-              </div>
-            </div>
-
-            <hr />
-
-            <h4 className="text-sm font-bold">
-              PRICE DETAILS ({selectedItems.length} Item
-              {selectedItems.length > 1 ? "s" : ""})
-            </h4>
-            <div className="text-sm space-y-2">
-              <div className="flex justify-between">
-                <span>Total MRP</span>
-                <span>₹{totalMrp}</span>
-              </div>
-              <div className="flex justify-between text-green-600 font-medium">
-                <span>Discount on MRP</span>
-                <span>-₹{discount}</span>
-              </div>
-              <div className="flex justify-between text-gray-500">
-                <span>Coupon Discount</span>
-                <span className="text-[#723248] font-semibold">
-                  {appliedCoupon
-                    ? `-₹${couponDiscount} (${appliedCoupon.code})`
-                    : "Apply Coupon"}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Platform Fee</span>
-                <span className="text-green-600">FREE</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Shipping Fee</span>
-                <span className="text-green-600">FREE</span>
-              </div>
-            </div>
-
-            <hr />
-
-            <div className="flex justify-between font-semibold text-base">
-              <span>Total Amount</span>
-              <span>₹{finalTotal}</span>
-            </div>
-
-            <Button
-              className="w-full bg-[#723248] hover:bg-[#5a1e38] text-white mt-2"
-              onClick={handleCheckout}
-            >
-              PLACE ORDER
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+        </>
+      )}
     </>
   );
 }

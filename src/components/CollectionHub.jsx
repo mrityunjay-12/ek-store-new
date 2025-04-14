@@ -30,19 +30,21 @@ export default function CollectionHub() {
         </h2>
 
         <div className="flex justify-center">
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-8 gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-4 gap-4">
             {categories.map((cat, index) => (
               <Link
                 key={cat._id || index}
-                to={`/products?category=${encodeURIComponent(
-                  cat.category_name.toLowerCase()
-                )}`}
+                to={`/products?categoryId=${cat._id}`}
                 className="flex flex-col items-center justify-center text-center hover:bg-gray-100 p-3 rounded-lg transition w-[100px]"
               >
                 <img
-                   src={cat.category_image?.trim() ? cat.category_image : "/icons/bag.png"}
+                  src={
+                    cat.category_image?.trim()
+                      ? cat.category_image
+                      : "/icons/bag.png"
+                  }
                   alt={cat.category_name}
-                  className="w-20 h-20 object-contain mb-2"
+                  className="w-20 h-20 object-contain mb-2 rounded-md"
                 />
                 <span className="text-sm font-medium text-gray-700">
                   {cat.category_name}

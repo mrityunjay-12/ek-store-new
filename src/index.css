@@ -32,6 +32,14 @@
   background-color: #cbd5e1;
   border-radius: 8px;
 }
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 
 @keyframes scroll-left {
   0% {
@@ -40,4 +48,42 @@
   100% {
     transform: translateX(-50%);
   }
+}
+
+
+@keyframes flicker {
+  0%, 100% { color: #dc2626; } /* red-600 */
+  50% { color: #000000; }      /* black */
+}
+
+.flicker-sale {
+  animation: flicker 1s infinite;
+  font-weight: bold;
+}
+
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Optional: Flicker effect for "Sale" */
+@keyframes flicker {
+  0%, 100% { color: #dc2626; } /* red-600 */
+  50% { color: #000000; }      /* black */
+}
+
+.flicker-sale {
+  animation: flicker 1s infinite;
+  font-weight: bold;
 }

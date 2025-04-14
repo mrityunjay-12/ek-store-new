@@ -1,51 +1,127 @@
 import { Dialog } from "@headlessui/react";
 import { X } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import toast from "react-hot-toast";
+import { setCoupon } from "@/redux/slices/cartSlice";
 
 export default function CouponModal({ isOpen, onClose, onApply, cartTotal }) {
+  const [availableCoupons, setAvailableCoupons] = useState([]);
   const [selectedCoupon, setSelectedCoupon] = useState(null);
   const [codeInput, setCodeInput] = useState("");
+  const [filteredCoupons, setFilteredCoupons] = useState([]);
+  const { user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
-  const availableCoupons = [
-    {
-      code: "ZEROPAY350",
-      discountAmount: 350,
-      description: "40% off on minimum purchase of Rs. 700",
-      minAmount: 700,
-      expiry: "17th December 2025 | 11:59 PM",
-    },
-    {
-      code: "SUPER200",
-      discountAmount: 200,
-      description: "Flat ₹200 off on orders above ₹500",
-      minAmount: 500,
-      expiry: "31st December 2025 | 11:59 PM",
-    },
-  ];
+  const mapCouponType = (type) => {
+    switch (type) {
+      case "Product Discount":
+        return "ProductDiscount";
+      case "Order Discount":
+        return "OrderDiscount";
+      case "Shipping Discount":
+        return "ShippingDiscount";
+      case "BuyXgetY":
+        return "BuyXgetY";
+      default:
+        return type;
+    }
+  };
 
   useEffect(() => {
-    if (isOpen) {
-      const best = availableCoupons
-        .filter((c) => cartTotal >= c.minAmount)
-        .sort((a, b) => b.discountAmount - a.discountAmount)[0];
-      setSelectedCoupon(best || null);
-    }
-  }, [isOpen, cartTotal]);
+    if (user && isOpen) {
+      const fetchCoupons = async () => {
+        try {
+          const res = await fetch("https://estylishkart.el.r.appspot.com/api/coupons/all");
+          const data = await res.json();
 
-  const applySelected = () => {
+          if (!res.ok) throw new Error(data.message || "Failed to fetch");
+
+          const rawCoupons = data?.data || [];
+          const validCoupons = rawCoupons.filter((coupon) => {
+            const meetsAmount = cartTotal >= coupon.minimum_purchase_amount;
+            const isActive = coupon.discount_coupon_status === "Active";
+            const isEligible =
+              coupon.eligibility === "All Customers" ||
+              coupon.specific_customers?.includes(user._id);
+            return isActive && meetsAmount && isEligible;
+          });
+
+          setAvailableCoupons(validCoupons);
+          setFilteredCoupons(validCoupons);
+
+          const best = validCoupons
+            .filter((c) => cartTotal >= c.minimum_purchase_amount)
+            .sort((a, b) => b.discount_value - a.discount_value)[0];
+
+          setSelectedCoupon(best || null);
+        } catch (err) {
+          console.error("Failed to load coupons:", err);
+          toast.error("Could not load coupons");
+        }
+      };
+
+      fetchCoupons();
+    }
+  }, [user, isOpen, cartTotal]);
+
+  const applySelected = async () => {
     if (selectedCoupon === "none") {
       onApply(null);
       onClose();
       return;
     }
 
-    if (selectedCoupon && cartTotal >= selectedCoupon.minAmount) {
+    if (!selectedCoupon || cartTotal < selectedCoupon.minimum_purchase_amount) {
+      alert("Coupon is not valid for your current cart total.");
+      return;
+    }
+
+    try {
+      const res = await fetch("https://estylishkart.el.r.appspot.com/api/apply-coupon", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: user?._id,
+          coupon_type: mapCouponType(selectedCoupon.discount_category),
+          coupon_id: selectedCoupon._id,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Could not apply coupon.");
+        return;
+      }
+
+      toast.success("Coupon applied successfully!");
+      dispatch(setCoupon(selectedCoupon));
       onApply(selectedCoupon);
       onClose();
-    } else {
-      alert("Coupon is not valid for your current cart total.");
+    } catch (err) {
+      console.error("Failed to apply coupon:", err);
+      alert("Could not apply coupon.");
     }
+  };
+
+  const handleSearch = () => {
+    const input = codeInput.trim().toLowerCase();
+    const matches = availableCoupons.filter((c) =>
+      c.title.toLowerCase().includes(input)
+    );
+
+    if (!input) {
+      setFilteredCoupons(availableCoupons);
+      return;
+    }
+
+    if (matches.length === 0) {
+      toast.error("No matching coupon found.");
+    }
+
+    setFilteredCoupons(matches);
   };
 
   return (
@@ -61,25 +137,28 @@ export default function CouponModal({ isOpen, onClose, onApply, cartTotal }) {
           </CardHeader>
 
           <CardContent className="space-y-4 px-6 pb-6">
-            {/* Manual code input (optional) */}
+            {/* Manual coupon code input */}
             <div className="flex gap-2">
               <input
-                placeholder="Enter coupon code"
+                placeholder="Search or enter coupon code"
                 value={codeInput}
                 onChange={(e) => setCodeInput(e.target.value)}
                 className="border w-full px-3 py-2 rounded text-sm"
               />
-              <button className="text-[#723248] font-semibold text-sm">
-                CHECK
+              <button
+                className="text-[#723248] font-semibold text-sm"
+                onClick={handleSearch}
+              >
+                SEARCH
               </button>
             </div>
 
-            {/* No Coupon Option */}
+            {/* "No Coupon" Option */}
             <div
               className={`border rounded p-3 mt-2 cursor-pointer ${
                 selectedCoupon === "none"
                   ? "border-[#723248] bg-[#fef6f8]"
-                  : "border-gray-300 "
+                  : "border-gray-300"
               }`}
               onClick={() => setSelectedCoupon("none")}
             >
@@ -96,39 +175,41 @@ export default function CouponModal({ isOpen, onClose, onApply, cartTotal }) {
               </div>
             </div>
 
-            {/* Available Coupons */}
-            {availableCoupons.map((coupon) => (
-              <div
-                key={coupon.code}
-                className={`border rounded p-3 mt-3 relative cursor-pointer ${
-                  selectedCoupon?.code === coupon.code
-                    ? "border-[#723248] bg-[#fef6f8]"
-                    : "border-gray-300"
-                }`}
-                onClick={() => setSelectedCoupon(coupon)}
-              >
-                <div className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="coupon"
-                    checked={selectedCoupon?.code === coupon.code}
-                    readOnly
-                  />
-                  <span className="text-sm font-semibold border border-dashed px-2 py-1 rounded text-[#723248]">
-                    {coupon.code}
-                  </span>
+            {/* Scrollable Coupons Section */}
+            <div className="max-h-60 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+              {filteredCoupons.map((coupon) => (
+                <div
+                  key={coupon._id}
+                  className={`border rounded p-3 mt-3 relative cursor-pointer ${
+                    selectedCoupon?._id === coupon._id
+                      ? "border-[#723248] bg-[#fef6f8]"
+                      : "border-gray-300"
+                  }`}
+                  onClick={() => setSelectedCoupon(coupon)}
+                >
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="coupon"
+                      checked={selectedCoupon?._id === coupon._id}
+                      readOnly
+                    />
+                    <span className="text-sm font-semibold border border-dashed px-2 py-1 rounded text-[#723248]">
+                      {coupon.title}
+                    </span>
+                  </div>
+                  <p className="text-sm mt-2 font-medium">
+                    Save ₹{coupon.discount_value}
+                  </p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    Minimum Order: ₹{coupon.minimum_purchase_amount}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {coupon.discount_category} | {coupon.method}
+                  </p>
                 </div>
-                <p className="text-sm mt-2 font-medium">
-                  Save ₹{coupon.discountAmount}
-                </p>
-                <p className="text-xs text-gray-600 mt-1">
-                  {coupon.description}
-                </p>
-                <p className="text-xs text-gray-400 mt-1">
-                  Expires on: {coupon.expiry}
-                </p>
-              </div>
-            ))}
+              ))}
+            </div>
 
             {/* Footer */}
             <div className="flex justify-between items-center pt-4 border-t">
@@ -138,7 +219,7 @@ export default function CouponModal({ isOpen, onClose, onApply, cartTotal }) {
                   ₹
                   {selectedCoupon === "none"
                     ? 0
-                    : selectedCoupon?.discountAmount || 0}
+                    : selectedCoupon?.discount_value || 0}
                 </strong>
               </p>
               <button

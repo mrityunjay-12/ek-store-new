@@ -33,6 +33,18 @@ export default function ProductCard({ product, minimal = false }) {
   const price = variant?.price;
   const compare_price = variant?.compare_price;
 
+  const isNew = (product) => {
+    const createdDate = new Date(product.product_variants?.[0]?.created_at);
+    const daysSince = (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
+    return daysSince <= 14; // products added within last 14 days
+  };
+
+  const getDiscountPercent = (product) => {
+    const variant = product.product_variants?.[0];
+    if (!variant?.compare_price || !variant?.price) return 0;
+    return Math.round(((variant.compare_price - variant.price) / variant.compare_price) * 100);
+  };
+
   const images = variant?.gallery_image?.length
     ? [variant.image, variant.gallery_image[0]]
     : [variant?.image || "/placeholder.jpg"];
@@ -54,12 +66,18 @@ export default function ProductCard({ product, minimal = false }) {
 
   const handleWishlistClick = async (e) => {
     e.stopPropagation();
-
-    if (!user || !user._id || !product?._id || !variant?._id) {
-      toast.error("User ID, Product ID, and Variant ID are required");
+  
+    if (!user || !user._id) {
+      toast.error("Please login to add items to your wishlist");
+      navigate("/login");
       return;
     }
-
+  
+    if (!product?._id || !variant?._id) {
+      toast.error("Product ID and Variant ID are required");
+      return;
+    }
+  
     try {
       const res = await fetch(
         "https://estylishkart.el.r.appspot.com/api/wishlist",
@@ -75,10 +93,10 @@ export default function ProductCard({ product, minimal = false }) {
           }),
         }
       );
-
+  
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Wishlist failed");
-
+  
       setWishlisted(true);
       toast.success("Added to Wishlist!");
     } catch (err) {
@@ -86,6 +104,7 @@ export default function ProductCard({ product, minimal = false }) {
       console.error("❌ Wishlist failed:", err);
     }
   };
+  
 
   return (
     <>
@@ -93,7 +112,7 @@ export default function ProductCard({ product, minimal = false }) {
         onClick={handleCardClick}
         className="group relative shadow-sm overflow-hidden hover:shadow-md transition cursor-pointer h-full flex flex-col"
       >
-        <Toaster position="center" />
+        {/* <Toaster position="center" /> */}
 
         {/* Wishlist Icon */}
         {!minimal && (
@@ -113,13 +132,32 @@ export default function ProductCard({ product, minimal = false }) {
         )}
 
         {/* Product Image */}
-        <img
-          src={hovered ? images[1] : images[0]}
-          alt={name}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          className="w-full h-64 object-contain transition-all duration-300 ease-in-out"
-        />
+        <div className="relative">
+          <img
+            src={hovered ? images[1] : images[0]}
+            alt={name}
+            onMouseEnter={() => images.length > 1 && setHovered(true)}
+    onMouseLeave={() => images.length > 1 && setHovered(false)}
+    className="w-full h-64 object-contain transition-all duration-300 ease-in-out"  
+          />
+
+          {/* Bottom Tags */}
+          <div className="absolute bottom-0 left-0 p-2 flex gap-2">
+            {isNew(product) && (
+              <span className="bg-green-600 text-white text-[10px] px-2 py-0.5 rounded">
+                New In
+              </span>
+            )}
+          </div >
+          <div className="absolute bottom-0 right-0 p-2 flex gap-2">
+
+            {getDiscountPercent(product) > 0 && (
+              <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded">
+                {getDiscountPercent(product)}% OFF
+              </span>
+            )}
+          </div>
+        </div>
 
         {/* Info */}
         <div className="p-4 space-y-2 mt-auto border-t-2 border-gray-200">

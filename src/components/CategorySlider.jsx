@@ -36,7 +36,7 @@ export default function CategorySlider() {
 
   return (
     <section className="py-1 bg-white relative">
-      <div className="max-w-4xl mx-auto px-4 relative mb-1 mt-1 ">
+      <div className="max-w-4xl mx-auto px-4 relative mb-1 mt-1">
         {/* Left Arrow */}
         <button
           onClick={() => scroll("left")}
@@ -54,7 +54,7 @@ export default function CategorySlider() {
             <div
               key={cat._id || index}
               onClick={() =>
-                navigate(`/products?category=${encodeURIComponent(cat.category_name.toLowerCase())}`)
+                navigate(`/products?categoryId=${cat._id}`)
               }
               className="flex-shrink-0 w-24 flex flex-col items-center text-center cursor-pointer hover:bg-gray-100 p-2 rounded-md transition"
             >
@@ -65,7 +65,7 @@ export default function CategorySlider() {
                     : "/icons/men.png"
                 }
                 alt={cat.category_name}
-                className="top-1/2 w-20 h-20 object-cover rounded-lg border shadow"
+                className="w-20 h-20 object-cover rounded-lg border shadow"
               />
               <span className="text-xs mt-1 font-medium text-gray-700">
                 {cat.category_name}

@@ -4,7 +4,7 @@ import ProductCard from "./ProductCard";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
-export default function ProductCarousel({ title, products = [] }) {
+export default function ProductCarousel({ title, products , category = [] }) {
   const scrollRef = useRef(null);
   const navigate = useNavigate();
 
@@ -37,7 +37,7 @@ export default function ProductCarousel({ title, products = [] }) {
               hover:bg-zinc-800
             "
             onClick={() =>
-              navigate(`/products?category=${title.toLowerCase()}`)
+              navigate(`/products?category=${category?.toLowerCase()}`)
             }
           >
             VIEW ALL

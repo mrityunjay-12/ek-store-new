@@ -1,6 +1,6 @@
 export default function HelpBanner() {
     return (
-      <div className="relative h-[260px] w-full bg-cover bg-center" style={{ backgroundImage: `url('/bg-pattern.png')` }}>
+      <div className="mt-8 relative h-[260px] w-full bg-cover bg-center" style={{ backgroundImage: `url('/bg-pattern.png')` }}>
         {/* Content Container */}
         <div className="max-w-screen-xl mx-auto px-4 py-16 flex flex-col items-center text-center">
           <h2 className="text-2xl font-bold mb-4">Need help?</h2>

@@ -11,11 +11,13 @@ import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import Signup from "./pages/SignUp";
 import Footer from "./components/Footer";
-import Wishlist from "@/pages/Wishlist";
+// import Wishlist from "@/pages/Wishlist";
 import ScrollToTop from "./components/ScrollToTop";
 import UserAccount from "./pages/UserAccount";
-
-
+import Faq from "./pages/faq";
+import OrderConfirmation from "./pages/OrderConfirmation";
+import { Toaster } from "react-hot-toast";
+import WishList from "./pages/WishList";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -26,11 +28,12 @@ export default function App() {
 
   return (
     <BrowserRouter>
-    <ScrollToTop />
+      <ScrollToTop />
       <Navbar />
+      <Toaster position="center" />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/wishlist" element={<WishList />} />
         <Route path="/profile" element={<UserAccount />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
@@ -38,6 +41,8 @@ export default function App() {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/products/:productId" element={<ProductDetailPage />} />
+        <Route path="/faq" element={<Faq />} />
+        <Route path="/order-confirmation" element={<OrderConfirmation />} />
         {/*  */}
       </Routes>
       <Footer />

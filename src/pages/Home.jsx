@@ -11,6 +11,7 @@ import HelpBanner from "@/components/HelpBanner";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import SubcategorySlider from "@/components/SubcategorySlider";
 
 // Sample products (replace with real API later)
 // const baseProducts = [
@@ -74,37 +75,46 @@ export default function Home() {
 
       {/* for coupon */}
       {/* Coupon Banners */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full  px-1">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full px-1 mb-8 mt-4">
         <img
           src="/offer.png"
           alt="Offer Coupon"
-          className="w-full h-3 sm:h-56 object-contain rounded-lg "
+          className="w-full  object-contain rounded-lg"
         />
         <img
           src="/offer.png"
           alt="Offer Coupon"
-          className="w-full h-3 sm:h-56 object-contain rounded-lg  hidden sm:block"
+          className="w-full  object-contain rounded-lg"
         />
-        {/* <img
+        <img
           src="/offer.png"
           alt="Offer Coupon"
-          className="w-full h-auto sm:h-56 object-contain rounded-lg  hidden sm:block"
-        /> */}
+          className="w-full  object-contain rounded-lg"
+        />
       </div>
 
       <CollectionHub />
 
-      <div className="" >
-      <img
+      <div className="">
+        <img
           src="/offer.png"
           alt="Offer Coupon"
           className="w-full h-auto sm:h-56 object-fill rounded-lg"
         />
       </div>
-      <ProductCarousel title="Kids" products={kidsProducts} />
-      <ProductCarousel title="Dreamy Women" products={womenProducts} />
+      <SubcategorySlider />
+      <ProductCarousel
+        title="Kids"
+        category="Kids-Girls"
+        products={kidsProducts}
+      />
+      <ProductCarousel
+        title="Dreamy Women"
+        category="Women"
+        products={womenProducts}
+      />
       <MidBanner />
-      <ProductCarousel title="Sale" products={saleProducts} />
+      <ProductCarousel title="Sale" category="Sale" products={saleProducts} />
       <HelpBanner />
     </div>
   );

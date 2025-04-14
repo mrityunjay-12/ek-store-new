@@ -7,7 +7,7 @@ import {
 } from "react-icons/fa";
 import { LiaStoreAltSolid } from "react-icons/lia";
 import { PiXLogoLight } from "react-icons/pi";
-
+import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -69,16 +69,16 @@ export default function Footer() {
         <div >
           <h4 className="font-semibold mb-3">Account</h4>
           <ul className="text-sm space-y-1 text-gray-700 mb-6">
-            <li><a href="#">My Account</a></li>
-            <li><a href="#">Check Order</a></li>
+            <li><Link to="/profile#">My Account</Link></li>
+            <li><Link to="/profile?tab=orders">Check Order</Link></li>
           </ul>
 
           <h4 className="font-semibold mb-3">Products</h4>
           <ul className="text-sm space-y-1 text-gray-700">
-            <li><a href="#">New In</a></li>
-            <li><a href="#">Accessories</a></li>
-            <li><a href="#">Girls</a></li>
-            <li><a href="#">Woman</a></li>
+            <li><Link to="/products#">New In</Link></li>
+            <li><Link to="/products?category=accessories#">Accessories</Link></li>
+            <li><Link to="/products?category=kids-girls#">Girls</Link></li>
+            <li><Link to="/products?categoryId=67dbce2c553ddd1f94fe1102#">Woman</Link></li>
           </ul>
         </div>
 
@@ -91,17 +91,16 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Column 3 - Help */}
-        <div >
+        <div>
           <h4 className="font-semibold mb-3">Help</h4>
           <ul className="text-sm space-y-1 text-gray-700">
-            <li><a href="#">FAQ</a></li>
-            <li><a href="#">Check Gift Card Balance</a></li>
-            <li><a href="#">Return & Exchange</a></li>
-            <li><a href="#">Terms of Use</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Store Pickup</a></li>
-            <li><a href="#">Shipping Policy</a></li>
+            <li><Link to="/faq">FAQ</Link></li>
+            <li><Link to="/faq">Check Gift Card Balance</Link></li>
+            <li><Link to="/faq">Return & Exchange</Link></li>
+            <li><Link to="/faq">Terms of Use</Link></li>
+            <li><Link to="/faq">Privacy Policy</Link></li>
+            <li><Link to="/faq">Store Pickup</Link></li>
+            <li><Link to="/faq">Shipping Policy</Link></li>
           </ul>
         </div>
 

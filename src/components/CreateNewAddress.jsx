@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const CreateNewAddress = ({ type, userId, onAddressAdded }) => {
+const CreateNewAddress = ({ type, userId, onAddressAdded, editData = null }) => {
   const [form, setForm] = useState({
     address_type: "Home",
     custom_address_type: "",
@@ -13,6 +13,22 @@ const CreateNewAddress = ({ type, userId, onAddressAdded }) => {
     alternative_phone_number: "",
   });
 
+  // Prefill form if in edit mode
+  useEffect(() => {
+    if (editData) {
+      setForm({
+        address_type: editData.address_type,
+        custom_address_type: editData.custom_address_type || "",
+        address_name: editData.address_name,
+        street: editData.street,
+        city: editData.city,
+        state: editData.state,
+        phone_number: editData.phone_number,
+        alternative_phone_number: editData.alternative_phone_number || "",
+      });
+    }
+  }, [editData]);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -20,12 +36,11 @@ const CreateNewAddress = ({ type, userId, onAddressAdded }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const endpoint =
+    const endpointBase =
       type === "shipping"
         ? "https://estylishkart.el.r.appspot.com/api/shipping-address"
         : "https://estylishkart.el.r.appspot.com/api/billing-address";
 
-    // Prepare payload based on address_type
     const payload = {
       user_id: userId,
       address_type: form.address_type,
@@ -42,8 +57,18 @@ const CreateNewAddress = ({ type, userId, onAddressAdded }) => {
     }
 
     try {
-      await axios.post(endpoint, payload);
-      onAddressAdded(); // refresh
+      if (editData?._id) {
+        // ✅ UPDATE with userId and addressId in the URL
+        const updateEndpoint = `${endpointBase}/${userId}/${editData._id}`;
+        console.log("PUT to:", updateEndpoint, payload);
+        await axios.put(updateEndpoint, payload);
+      } else {
+        // ✅ CREATE
+        await axios.post(endpointBase, payload);
+      }
+
+      onAddressAdded(); // refresh after submit
+
       // Reset form
       setForm({
         address_type: "Home",
@@ -56,8 +81,8 @@ const CreateNewAddress = ({ type, userId, onAddressAdded }) => {
         alternative_phone_number: "",
       });
     } catch (error) {
-      console.error("Failed to add address:", error);
-      alert("Failed to add address. Please check console.");
+      console.error("Failed to save address:", error);
+      alert("Failed to save address. Please check console.");
     }
   };
 
@@ -67,7 +92,7 @@ const CreateNewAddress = ({ type, userId, onAddressAdded }) => {
       className="space-y-3 border rounded p-4 bg-gray-50 mb-6"
     >
       <h4 className="text-md font-semibold text-[#723248] mb-2">
-        Add New {type} Address
+        {editData ? "Edit" : "Add New"} {type} Address
       </h4>
 
       <select
@@ -144,7 +169,7 @@ const CreateNewAddress = ({ type, userId, onAddressAdded }) => {
         type="submit"
         className="bg-[#723248] text-white px-4 py-2 rounded"
       >
-        Add {type} Address
+        {editData ? "Update" : "Add"} {type} Address
       </button>
     </form>
   );

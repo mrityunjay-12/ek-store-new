@@ -5,7 +5,7 @@ export default function SearchDropdown({ suggestions = [], searchQuery = "" }) {
     searchQuery.trim().length > 0 && suggestions.length > 0;
 
   return (
-    <div className="absolute z-50 mt-2 w-full bg-white border rounded-xl shadow-lg p-4 text-sm space-y-4 max-h-[500px] overflow-y-auto">
+    <div className="absolute z-50 mt-2 w-full bg-white border rounded-xl shadow-lg p-4 text-sm space-y-9 max-h-[500px] overflow-y-auto">
       {/* Search Suggestions */}
       {showSuggestions && (
         <div>

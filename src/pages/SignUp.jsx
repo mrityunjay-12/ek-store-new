@@ -14,9 +14,12 @@ export default function Signup() {
     phone_number: "",
     password: "",
     address: "",
-    user_role: "Customer", // default
+    user_role: "Customer",
   });
+
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -24,6 +27,8 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
+    setLoading(true);
 
     try {
       const res = await fetch(
@@ -32,21 +37,25 @@ export default function Signup() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(form),
-          credentials: "include",
         }
       );
+
       const data = await res.json();
 
       if (data?.user) {
+        setSuccess(data.message || "Account created successfully!");
         dispatch(loginSuccess(data.user));
         localStorage.setItem("user", JSON.stringify(data.user));
-        navigate("/");
+        // wait 1 sec before redirect to show message
+        setTimeout(() => navigate("/"), 1000);
       } else {
         setError(data?.message || "Signup failed. Please try again.");
       }
     } catch (err) {
       console.error(err);
       setError("Something went wrong!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,15 +112,16 @@ export default function Signup() {
           className="border w-full p-2 rounded"
           required
         />
-       
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
+        {success && <p className="text-green-600 text-sm">{success}</p>}
 
         <button
           type="submit"
-          className="bg-[#5b2338] text-white px-4 py-2 rounded w-full"
+          className="bg-[#5b2338] text-white px-4 py-2 rounded w-full disabled:opacity-50"
+          disabled={loading}
         >
-          Sign Up
+          {loading ? "Creating account..." : "Sign Up"}
         </button>
       </form>
     </div>
