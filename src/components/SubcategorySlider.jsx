@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
 
 const SubcategorySlider = () => {
   const [subcategories, setSubcategories] = useState([]);
@@ -62,35 +64,60 @@ const SubcategorySlider = () => {
   }, []);
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 py-6">
-      <h2 className="text-xl font-bold text-gray-800 mb-4"></h2>
+  <div className="max-w-[1440px] mx-auto px-4 py-6 relative">
+    {/* Header and controls */}
+    <div className="flex items-center justify-end  -mt-10">
+      {/* <h2 className="text-xl font-bold text-gray-800">Shop by Subcategory</h2> */}
+      <div className="flex gap-2">
+  <button
+    onClick={() =>
+      scrollRef.current?.scrollBy({ left: -160, behavior: "smooth" })
+    }
+    className="w-10 h-10 text-black flex items-center justify-center"
+  >
+    <ChevronLeft className="w-6 h-6" />
+  </button>
 
-      <div
-        ref={scrollRef}
-        className="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hide"
-        style={{ scrollbarWidth: "none" }}
-      >
-        {subcategories.map((sub, i) => (
-          <Link
-            key={sub._id || i}
-            to={`/products?subcategory=${encodeURIComponent(sub.sub_category_name)}`}
-            className="min-w-[140px] w-[140px] flex-shrink-0 text-center"
-          >
-            <div className="relative h-[180px] w-[140px] bg-gray-100 rounded overflow-hidden mb-2">
-              <img
-                src={sub.sub_category_image || "/product1.png"}
-                alt={sub.sub_category_name}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs font-medium py-1">
-                {sub.sub_category_name}
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+  <button
+    onClick={() =>
+      scrollRef.current?.scrollBy({ left: 160, behavior: "smooth" })
+    }
+    className="w-10 h-10 text-black flex items-center justify-center"
+  >
+    <ChevronRight className="w-6 h-6" />
+  </button>
+</div>
+
     </div>
-  );
+
+    {/* Slider */}
+    <div
+      ref={scrollRef}
+      className="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hide"
+      style={{ scrollbarWidth: "none" }}
+    >
+      {subcategories.map((sub, i) => (
+        <Link
+          key={sub._id || i}
+          to={`/products?subcategory=${encodeURIComponent(sub.sub_category_name)}`}
+          className="min-w-[140px] w-[140px] flex-shrink-0 text-center"
+        >
+          <div className="relative h-[180px] w-[140px] bg-gray-100 rounded overflow-hidden mb-2">
+            <img
+              src={sub.sub_category_image || "/product1.png"}
+              alt={sub.sub_category_name}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-xs font-medium py-1">
+              {sub.sub_category_name}
+            </div>
+          </div>
+        </Link>
+      ))}
+    </div>
+  </div>
+);
+
 };
 
 export default SubcategorySlider;

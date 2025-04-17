@@ -35,14 +35,17 @@ export default function ProductCard({ product, minimal = false }) {
 
   const isNew = (product) => {
     const createdDate = new Date(product.product_variants?.[0]?.created_at);
-    const daysSince = (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
+    const daysSince =
+      (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
     return daysSince <= 14; // products added within last 14 days
   };
 
   const getDiscountPercent = (product) => {
     const variant = product.product_variants?.[0];
     if (!variant?.compare_price || !variant?.price) return 0;
-    return Math.round(((variant.compare_price - variant.price) / variant.compare_price) * 100);
+    return Math.round(
+      ((variant.compare_price - variant.price) / variant.compare_price) * 100
+    );
   };
 
   const images = variant?.gallery_image?.length
@@ -66,18 +69,18 @@ export default function ProductCard({ product, minimal = false }) {
 
   const handleWishlistClick = async (e) => {
     e.stopPropagation();
-  
+
     if (!user || !user._id) {
       toast.error("Please login to add items to your wishlist");
       navigate("/login");
       return;
     }
-  
+
     if (!product?._id || !variant?._id) {
       toast.error("Product ID and Variant ID are required");
       return;
     }
-  
+
     try {
       const res = await fetch(
         "https://estylishkart.el.r.appspot.com/api/wishlist",
@@ -93,10 +96,10 @@ export default function ProductCard({ product, minimal = false }) {
           }),
         }
       );
-  
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Wishlist failed");
-  
+
       setWishlisted(true);
       toast.success("Added to Wishlist!");
     } catch (err) {
@@ -104,7 +107,6 @@ export default function ProductCard({ product, minimal = false }) {
       console.error("❌ Wishlist failed:", err);
     }
   };
-  
 
   return (
     <>
@@ -137,8 +139,8 @@ export default function ProductCard({ product, minimal = false }) {
             src={hovered ? images[1] : images[0]}
             alt={name}
             onMouseEnter={() => images.length > 1 && setHovered(true)}
-    onMouseLeave={() => images.length > 1 && setHovered(false)}
-    className="w-full h-64 object-contain transition-all duration-300 ease-in-out"  
+            onMouseLeave={() => images.length > 1 && setHovered(false)}
+            className="w-full h-64 object-contain transition-all duration-300 ease-in-out"
           />
 
           {/* Bottom Tags */}
@@ -148,9 +150,8 @@ export default function ProductCard({ product, minimal = false }) {
                 New In
               </span>
             )}
-          </div >
+          </div>
           <div className="absolute bottom-0 right-0 p-2 flex gap-2">
-
             {getDiscountPercent(product) > 0 && (
               <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded">
                 {getDiscountPercent(product)}% OFF
@@ -161,7 +162,7 @@ export default function ProductCard({ product, minimal = false }) {
 
         {/* Info */}
         <div className="p-4 space-y-2 mt-auto border-t-2 border-gray-200">
-          <h3 className="text-base font-semibold text-gray-800 line-clamp-1">
+          <h3 className="text-base font-semibold text-gray-800 line-clamp-2">
             {name}
           </h3>
 

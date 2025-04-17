@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "@/redux/slices/userSlice";
 import SearchDropdown from "./SearchDropdown";
 import { Link } from "react-router-dom";
+import SubCatBar from "./Navbar/subcatBar";
 
 export default function Navbar() {
   const { user } = useSelector((state) => state.user);
@@ -19,6 +20,7 @@ export default function Navbar() {
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const cartItems = useSelector((state) => state.cart?.items || []);
   const wishlistItems = useSelector((state) => state.wishlist?.items || []);
+  const [selectedSubcat, setSelectedSubcat] = useState(null);
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -62,10 +64,10 @@ export default function Navbar() {
             const subArray =
               cat.sub_categories?.map((s) => s.sub_category_name) || [];
 
-            const chunked = Array.from({ length: 3 }, (_, i) =>
+            const chunked = Array.from({ length: 5 }, (_, i) =>
               subArray.slice(
-                i * Math.ceil(subArray.length / 3),
-                (i + 1) * Math.ceil(subArray.length / 3)
+                i * Math.ceil(subArray.length / 5),
+                (i + 1) * Math.ceil(subArray.length / 5)
               )
             );
 
@@ -218,7 +220,7 @@ export default function Navbar() {
                     ))}
                     {/* <Link
                       to="/blog"
-                      className="block px-4 py-2 mt-4 text-base font-medium text-gray-800 hover:text-black"
+                      className="flex items-center border px-4 py-1 mr-4 rounded-lg border-black "
                       onClick={() => setIsOpen(false)}
                     >
                       Blog
@@ -330,71 +332,48 @@ export default function Navbar() {
         </Link>
 
         {/* Category Links */}
-        <nav className="flex space-x-6 relative">
-          {categories.map((cat) => {
-            const isActive = hoveredCat?.name === cat.name;
-            return (
-              <div key={cat.name} className="relative">
+        <nav className="flex space-x-12 relative ml-40 pl-20">
+        {categories.map((cat) => {
+          const isActive = hoveredCat?.name === cat.name;
+          return (
+            <div key={cat.name} className="relative">
+              <span
+                className="category-link cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setHoveredCat((prev) => (prev?.name === cat.name ? null : cat));
+                  setSelectedSubcat(null);
+                }}
+              >
                 <span
-                  className="category-link cursor-pointer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setHoveredCat((prev) =>
-                      prev?.name === cat.name ? null : cat
-                    );
-                  }}
+                  className={`text-sm font-medium transition ${
+                    cat.name.toLowerCase() === "sale"
+                      ? "flicker-sale"
+                      : isActive
+                      ? "text-black border-b-2 border-yellow-600"
+                      : "text-gray-700 hover:text-black"
+                  }`}
                 >
-                  <span
-                    className={`text-sm font-medium transition ${
-                      cat.name.toLowerCase() === "sale"
-                        ? "flicker-sale"
-                        : isActive
-                        ? "text-black border-b-2 border-yellow-600"
-                        : "text-gray-700 hover:text-black"
-                    }`}
-                  >
-                    {cat.name}
-                  </span>
+                  {cat.name}
                 </span>
-
-                {/* Dropdown */}
-                {isActive && cat.subs?.length > 0 && (
-                  <div
-                    id="category-dropdown"
-                    className="absolute top-full left-[-80px] mt-2 p-6 bg-white shadow-lg border z-50 min-w-[600px] grid grid-cols-3 gap-8 rounded-md animate-fade-in"
-                  >
-                    {cat.subs.map((sub, i) => (
-                      <div key={i}>
-                        {/* <h4 className="text-[15px] font-semibold text-[#d6336c] mb-2">
-                          {sub.groupTitle}
-                        </h4> */}
-                        <ul className="space-y-1 text-[14px] text-gray-700">
-                          {sub.items.map((item, idx) => (
-                            <li key={idx}>
-                              <Link
-                                to={`/products?subcategory=${encodeURIComponent(
-                                  item
-                                )}`}
-                                className="hover:underline block"
-                                onClick={() => setHoveredCat(null)}
-                              >
-                                {item}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </nav>
+              </span>
+            </div>
+          );
+        })}
+      </nav>
 
         {/* Search + Icons */}
         <div className="flex items-center space-x-3 flex-shrink-0">
-  <div className="w-[200px] relative">
+        {/* <button className="flex items-center border px-4 py-1 mr-4 rounded-lg border-black "> Blog</button> */}
+        <Link
+          to="/blog"
+          className="flex items-center border px-4 py-1 mr-4 rounded-lg border-black "
+          onClick={() => setIsOpen(false)}
+          >
+            Blog
+        </Link> 
+  <div className="w-[200px] relative"> 
+   
     <div className="flex items-center border rounded-full px-3 py-1 bg-white">
       <Search className="w-4 h-4 text-gray-400" />
       <input
@@ -407,6 +386,7 @@ export default function Navbar() {
         onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
       />
     </div>
+    
 
     {searchFocused && filteredSuggestions.length > 0 && (
   <div className="absolute left-[-80px] w-[400px] bg-white border rounded shadow-md mt-1 z-50 max-h-80 overflow-auto">
@@ -536,13 +516,20 @@ export default function Navbar() {
                        Logout
                      </button>
                    </div>
+                   
                  </div>
                )}
              </div>
            )}
-</div>
+           </div>
 
       </div>
+      <SubCatBar
+        hoveredCat={hoveredCat}
+        selectedSubcat={selectedSubcat}
+        setSelectedSubcat={setSelectedSubcat}
+        setHoveredCat={setHoveredCat}
+      />
     </header>
   );
 }

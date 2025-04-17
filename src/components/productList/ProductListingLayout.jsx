@@ -3,8 +3,7 @@ import FilterSidebar from "@/components/FilterSidebar";
 import ProductGrid from "@/components/productList/ProductGrid";
 import PaginationControls from "@/components/productList/PaginationControls";
 // import SubCategoryPills from "@/components/SubCategoryPills";
-import SubCategoryPill from "@/components/SubCategoryPill";
-// import SubCategoryPills from "@/components/SubCategoryPills";
+import SubCategoryPill from "../SubCategoryPill";
 
 export default function ProductListingLayout({
   filters,

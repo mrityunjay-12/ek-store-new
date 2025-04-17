@@ -18,6 +18,7 @@ import Faq from "./pages/faq";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import { Toaster } from "react-hot-toast";
 import WishList from "./pages/WishList";
+import Blog from "./pages/BlogHomePage";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -43,6 +44,7 @@ export default function App() {
         <Route path="/products/:productId" element={<ProductDetailPage />} />
         <Route path="/faq" element={<Faq />} />
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
+        <Route path="/blog" element={<Blog/>}/>
         {/*  */}
       </Routes>
       <Footer />
