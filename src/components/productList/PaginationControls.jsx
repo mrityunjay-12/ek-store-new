@@ -24,7 +24,8 @@ export default function PaginationControls({
     };
   
     return (
-      <div className="flex flex-wrap justify-center items-center gap-2 mt-8 text-sm">
+      <div className="flex flex-wrap justify-center items-center gap-2 mt-8 text-sm px-2 sm:px-0">
+
         {/* First Page */}
         <button
           onClick={() => onPageChange(1)}

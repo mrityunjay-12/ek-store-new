@@ -30,12 +30,14 @@ export default function CollectionHub() {
         </h2>
 
         <div className="flex justify-center">
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-10">
-            {categories.map((cat, index) => (
+          <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-5 gap-10">
+            {categories.slice(0, 10).map((cat, index) => (
               <Link
                 key={cat._id || index}
-                to={`/products?categoryId=${cat._id}`}
-                className="flex flex-col items-center justify-center text-center hover:bg-gray-100 p-3  rounded-lg transition w-[100px]"
+                to={`/product/category/${cat.category_name
+                  .replace(/\s+/g, "-")
+                  .toLowerCase()}_${cat._id}`}
+                className="flex flex-col items-center justify-center text-center hover:scale-105 ease-in-out p-3 rounded-lg transition w-[120px]"
               >
                 <img
                   src={
@@ -44,7 +46,7 @@ export default function CollectionHub() {
                       : "/icons/bag.png"
                   }
                   alt={cat.category_name}
-                  className="w-30 h-30 object-contain mb-2 rounded-md "
+                  className=" h-[100px] object-contain mb- rounded-md m-2 "
                 />
                 <span className="text-sm font-medium text-gray-700">
                   {cat.category_name}

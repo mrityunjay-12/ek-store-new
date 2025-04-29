@@ -17,12 +17,23 @@ export default function CheckoutPage() {
   const [billingAddressId, setBillingAddressId] = useState(null);
 
   const { user } = useSelector((state) => state.user);
-  const allItems = useSelector((state) => state.cart.items || []);
+  const quickItem = useSelector((state) => state.buyNow.item);
+  const allItems = quickItem
+    ? [quickItem]
+    : useSelector((state) => state.cart.items || []);
+
   const appliedCoupon = useSelector((state) => state.cart.coupon);
 
-  const cartItems = allItems.filter((item) => item.selected);
+  // const cartItems = allItems.filter((item) => item.selected);
   const couponDiscount = appliedCoupon?.discountAmount || 0;
+ const buyNowProduct = useSelector((state) => state.buyNow.product);
 
+  
+  const cartItems = buyNowProduct
+    ? [{ ...buyNowProduct, quantity: 1 }]
+    : useSelector((state) => state.cart.items || []).filter(
+        (item) => item.selected
+      );
   useEffect(() => {
     if (!user || !user._id) return;
 

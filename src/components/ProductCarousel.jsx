@@ -70,7 +70,6 @@ export default function ProductCarousel({ title, products , category = [] }) {
                   lg:w-1/5       // 5 cards on large
                   xl:w-1/6       // 6 cards on extra large
                   px-2
-                  h-[380px]
                 "
               >
                 <ProductCard product={product} />

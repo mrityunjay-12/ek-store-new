@@ -30,6 +30,7 @@ const UserOrders = () => {
   };
 
   useEffect(() => {
+    
     fetchOrders();
   }, [userId]);
 
@@ -61,7 +62,9 @@ const UserOrders = () => {
 
         <div className="flex flex-wrap gap-4 mb-4">
           <div>
-            <label className="text-sm block mb-1 text-gray-600">Start Date</label>
+            <label className="text-sm block mb-1 text-gray-600">
+              Start Date
+            </label>
             <input
               type="date"
               value={startDate}
@@ -88,7 +91,10 @@ const UserOrders = () => {
       ) : (
         <div className="space-y-6 overflow-y-auto h-[calc(100%-3.5rem)] pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
           {filteredOrders.map((order) => (
-            <div key={order._id} className="border p-4 rounded shadow-sm bg-white">
+            <div
+              key={order._id}
+              className="border p-4 rounded shadow-sm bg-white"
+            >
               <div className="flex justify-between items-center mb-3">
                 <div>
                   <p className="text-sm font-medium text-gray-800">
@@ -123,9 +129,8 @@ const UserOrders = () => {
                 <p>
                   <strong>Billing Address:</strong>{" "}
                   {order.billing_address?.address_name},{" "}
-                  {order.billing_address?.street},{" "}
-                  {order.billing_address?.city},{" "}
-                  {order.billing_address?.state} -{" "}
+                  {order.billing_address?.street}, {order.billing_address?.city}
+                  , {order.billing_address?.state} -{" "}
                   {order.billing_address?.phone_number}
                 </p>
               </div>
@@ -149,15 +154,22 @@ const UserOrders = () => {
                   //     : 0;
 
                   return (
-                    <div key={item._id} className="flex gap-4 border rounded p-3 bg-gray-50 items-start">
+                    <div
+                      key={item._id}
+                      className="flex gap-4 border rounded p-3 bg-gray-50 items-start"
+                    >
                       <img
                         src={variant?.image}
                         alt={product?.product_name}
                         className="w-20 h-20 object-cover rounded"
                       />
                       <div className="flex-1 text-sm">
-                        <p className="text-xs text-gray-500 mb-1">{product?.product_type}</p>
-                        <h3 className="font-semibold text-gray-800">{product?.product_name}</h3>
+                        <p className="text-xs text-gray-500 mb-1">
+                          {product?.product_type}
+                        </p>
+                        <h3 className="font-semibold text-gray-800">
+                          {product?.product_name}
+                        </h3>
 
                         <div className="flex items-center gap-1 mt-1">
                           <label>Qty:</label>
@@ -165,7 +177,9 @@ const UserOrders = () => {
                         </div>
 
                         <div className="mt-2">
-                          <span className="font-semibold text-gray-900 text-sm">₹{variant.price}</span>
+                          <span className="font-semibold text-gray-900 text-sm">
+                            ₹{variant.price}
+                          </span>
                           {variant.compare_price > variant.price && (
                             <>
                               {/* <span className="ml-2 text-gray-500 line-through text-xs">
@@ -177,8 +191,6 @@ const UserOrders = () => {
                             </>
                           )}
                         </div>
-
-
                       </div>
                     </div>
                   );

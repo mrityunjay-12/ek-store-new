@@ -2,7 +2,7 @@ import ProductCard from "@/components/ProductCard";
 
 export default function ProductGrid({ products }) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-6 mt-5 pl-10">
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
       {products.length > 0 ? (
         products.map((product) => (
           <ProductCard key={product._id} product={product} />

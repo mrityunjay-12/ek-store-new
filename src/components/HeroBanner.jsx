@@ -1,35 +1,60 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
-
-const images = ["/hero.png", "/pic2.png", "/hero-2.jpg"];
+import axios from "axios";
 
 export default function HeroBanner() {
+  const [banners, setBanners] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Fetch banners on mount
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const res = await axios.get(
+          "https://estylishkart.el.r.appspot.com/api/banners"
+        );
+        setBanners(res.data?.data || []);
+      } catch (err) {
+        console.error("Failed to load banners", err);
+      }
+    };
+
+    fetchBanners();
+  }, []);
+
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % images.length);
+    setCurrentIndex((prev) => (prev + 1) % banners.length);
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+    setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);
   };
 
-  // Auto-scroll every 4 seconds
+  // Auto-scroll every 6 seconds
   useEffect(() => {
+    if (banners.length === 0) return;
     const interval = setInterval(() => {
       nextSlide();
     }, 6000);
-    return () => clearInterval(interval); // Cleanup
-  }, []);
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [banners]);
+
+  if (banners.length === 0) {
+    return (
+      <div className="w-full h-[435px] flex items-center justify-center bg-gray-100">
+        Loading banners...
+      </div>
+    );
+  }
 
   return (
     <section className="relative w-full bg-white overflow-hidden">
       <div className="w-full h-full transition-all duration-500 sm:h-[435px]">
         {/* Image */}
         <img
-          src={images[currentIndex]}
-          alt={`Slide ${currentIndex + 1}`}
+          src={banners[currentIndex]?.banner_image}
+          alt={`Banner ${currentIndex + 1}`}
           className="w-full h-auto object-contain sm:object-cover transition-all duration-500"
         />
 

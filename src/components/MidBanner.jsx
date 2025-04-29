@@ -16,22 +16,24 @@ export default function MidBanner() {
 
         {/* Overlay Content */}
         <div className="absolute inset-0 flex flex-col justify-center items-center px-6 text-center bg-black/30 rounded-lg">
-          <div className="text-white space-y-4 max-w-xl">
+          <div className="text-white space-y-4 max-w-xl py-9">
+            {/* change4 */}
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
               Create New Trends
             </h2>
-            <p className="text-sm md:text-base">
+            <p className="text-sm md:text-base  ">
               Discover fresh fashion inspirations that define your style. We
               curate the most stunning pieces from top brands.
             </p>
-            <Button
+            
+          </div>
+          <Button
               variant="secondary"
-              className="mt-2 border text-black font-bold bg-white py-4 px-6 sm:py-6 sm:px-8"
+              className="border text-black font-bold bg-white py-3 px-6 sm:py-5  sm:px-8"
               onClick={() => navigate("/products")} // 👈 Navigate on click
             >
               Explore All Collection
             </Button>
-          </div>
         </div>
       </div>
     </section>

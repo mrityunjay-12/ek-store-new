@@ -1,25 +1,18 @@
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaSnapchatGhost,
-  FaPinterestP,
-  FaWhatsapp,
-} from "react-icons/fa";
 import { LiaStoreAltSolid } from "react-icons/lia";
-import { PiXLogoLight } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default function Footer() {
   const socialLinks = [
-    { icon: <FaFacebookF />, bg: "bg-blue-100" },
-    { icon: <PiXLogoLight />, bg: "bg-gray-100" },
-    { icon: <FaInstagram />, bg: "bg-pink-100" },
-    { icon: <FaSnapchatGhost />, bg: "bg-yellow-100" },
-    { icon: <FaPinterestP />, bg: "bg-red-100/20" },
-    { icon: <FaWhatsapp />, bg: "bg-green-100" },
+    { icon: "/logos/facebook.png", bg: "bg-blue-100", alt: "Facebook" },
+    { icon: "/logos/x.png", bg: "bg-gray-100", alt: "X (Twitter)" },
+    { icon: "/logos/insta.png", bg: "bg-pink-100", alt: "Instagram" },
+    { icon: "/logos/snapchat.png", bg: "bg-yellow-100", alt: "Snapchat" },
+    { icon: "/logos/pinterest.png", bg: "bg-red-100/20", alt: "Pinterest" },
+    { icon: "/logos/whatsapp.png", bg: "bg-green-100", alt: "WhatsApp" },
   ];
+  // change8
 
   return (
     <footer className="bg-white text-black pt-12">
@@ -53,11 +46,11 @@ export default function Footer() {
             key={idx}
             className={`w-[150px] h-[65px] flex items-center justify-center rounded-sm border ${item.bg}`}
           >
-            <div className="text-xl">{item.icon}</div>
+            <img src={item.icon} alt={item.alt} className="h-6 w-6" />
           </div>
         ))}
         <button className="w-full md:w-auto h-[65px] flex items-center justify-center gap-2 px-6 md:px-20 border rounded-sm text-sm font-medium text-blue-600 hover:bg-blue-50 transition">
-        <LiaStoreAltSolid className="text-lg " />
+          <LiaStoreAltSolid className="text-lg " />
           Find Our Stores
         </button>
       </div>

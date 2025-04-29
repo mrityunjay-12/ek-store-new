@@ -1,11 +1,9 @@
 import TopBar from "@/components/TopBar";
-import Navbar from "@/components/Navbar";
 import HeroBanner from "@/components/HeroBanner";
 import CollectionHub from "@/components/CollectionHub";
 import ProductCarousel from "@/components/ProductCarousel";
 import MidBanner from "@/components/MidBanner";
 import LoyaltyTab from "@/components/LoyaltyTab";
-import Footer from "@/components/Footer";
 import CategorySlider from "@/components/CategorySlider";
 import HelpBanner from "@/components/HelpBanner";
 
@@ -13,28 +11,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import SubcategorySlider from "@/components/SubcategorySlider";
 
-// Sample products (replace with real API later)
-// const baseProducts = [
-//     {
-//       name: "Regular Slim Fit Khaki Trousers",
-//       price: 1299,
-//       act_price: 1300,
-//       image: "/product1.png",
 
-//     },
-//     {
-//       name: "Casual Denim Jacket",
-//       price: 1999,
-//       act_price: 2500,
-//       image: "/product2.png",
-
-//     },
-//   ]
-
-//   const sampleProducts = new Array(10).fill(0).map((_, i) => ({
-//     id: i + 1,
-//     ...baseProducts[i % 2],
-//   }))
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -68,38 +45,31 @@ export default function Home() {
   return (
     <div className="bg-white min-h-screen overflow-x-hidden">
       {/* <Navbar /> */}
-      <TopBar />
+      <TopBar   />
       <CategorySlider />
       <HeroBanner />
       <LoyaltyTab />
 
       {/* for coupon */}
       {/* Coupon Banners */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full px-1 mb-8 mt-4">
-        <img
-          src="/offer.png"
-          alt="Offer Coupon"
-          className="w-full  object-contain rounded-lg"
-        />
-        <img
-          src="/offer.png"
-          alt="Offer Coupon"
-          className="w-full  object-contain rounded-lg"
-        />
-        <img
-          src="/offer.png"
-          alt="Offer Coupon"
-          className="w-full  object-contain rounded-lg"
-        />
+      <div className="flex sm:grid sm:grid-cols-3 gap-4 w-full px-1 mb-8 mt-4 overflow-x-auto scrollbar-hide">
+        {[...Array(3)].map((_, i) => (
+          <img
+            key={i}
+            src="/offer.png"
+            alt="Offer Coupon"
+            className="min-w-[250px] sm:min-w-0 w-full object-contain rounded-lg"
+          />
+        ))}
       </div>
 
       <CollectionHub />
-
-      <div className="">
+      {/* change1 */}
+      <div>
         <img
           src="/offer.png"
           alt="Offer Coupon"
-          className="w-full h-auto sm:h-56 object-fill rounded-lg"
+          className=" object-fill h-[150px] w-full"
         />
       </div>
       <SubcategorySlider />

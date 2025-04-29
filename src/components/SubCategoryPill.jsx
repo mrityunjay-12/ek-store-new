@@ -23,12 +23,12 @@ export default function SubCategoryPill({ selected, onSelect }) {
   return (
     <div className="mb-6">
       {/* Category Pills with Icons */}
-      <div className="flex flex-wrap gap-3 mb-3">
+      <div className="flex flex-wrap  mb-3">
         {data.slice(0, 5).map((cat) => (
           <button
             key={cat.category}
             onClick={() => setActiveCategory(cat.category)}
-            className={`flex items-center gap-2 px-3 py-1 text-sm rounded-full border ${
+            className={`flex items-center gap-2 text-sm rounded-full border ${
               cat.category === activeCategory
                 ? "bg-black text-white"
                 : "bg-gray-100 text-gray-800"
@@ -37,7 +37,7 @@ export default function SubCategoryPill({ selected, onSelect }) {
             <img
               src={`/icons/${cat.image}`}
               alt={cat.category}
-              className="w-4 h-4 object-contain"
+              className="object-contain"
             />
             {cat.category}
           </button>

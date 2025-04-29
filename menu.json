@@ -1,0 +1,421 @@
+{
+  "name": "Mega Menu",
+  "items": [
+    {
+      "label": "MEN",
+      "link": "#",
+      "inner_items": [
+        {
+          "label": "Topwear",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "T-Shirts", "link": "" },
+            { "label": "Casual Shirts", "link": "" },
+            { "label": "Formal Shirts", "link": "" },
+            { "label": "Blazers & Coats", "link": "" }
+          ]
+        },
+        {
+          "label": "Bottomwear",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Jeans", "link": "" },
+            { "label": "Casual Trousers", "link": "" },
+            { "label": "Formal Trousers", "link": "" },
+            { "label": "Shorts", "link": "" }
+          ]
+        },
+        {
+          "label": "Footwear",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Casual Shoes", "link": "" },
+            { "label": "Sports Shoes", "link": "" },
+            { "label": "Formal Shoes", "link": "" },
+            { "label": "Sandals", "link": "" },
+            { "label": "Socks", "link": "" }
+          ]
+        },
+        {
+          "label": "Personal Care & Grooming",
+          "link": ""
+        },
+        {
+          "label": "Sunglasses & Frames",
+          "link": ""
+        },
+        {
+          "label": "Watches",
+          "link": ""
+        }
+      ]
+    },
+    {
+      "label": "WOMEN",
+      "link": "",
+      "inner_items": [
+        {
+          "label": "Indian & Fusion Wear",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Kurtas & Suits", "link": "" },
+            { "label": "Kurtis, Tunics & Tops", "link": "" },
+            { "label": "Sarees", "link": "" },
+            { "label": "Leggings, Salwars & Chudidars", "link": "" },
+            { "label": "Dress Materials", "link": "" },
+            { "label": "Lehenga Cholis and Gowns", "link": "" }
+          ]
+        },
+        {
+          "label": "Western Wear",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Dresses", "link": "" },
+            { "label": "Tops", "link": "" },
+            { "label": "T-Shirts", "link": "" },
+            { "label": "Jeans", "link": "" },
+            { "label": "Shorts & Skirts", "link": "" }
+          ]
+        },
+        {
+          "label": "Footwear",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Flats", "link": "" },
+            { "label": "Casual Shoes", "link": "" },
+            { "label": "Heels", "link": "" },
+            { "label": "Sports Shoes & Floaters", "link": "" }
+          ]
+        },
+        {
+          "label": "Beauty & Personal Care",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Makeup", "link": "" },
+            { "label": "Skincare", "link": "" },
+            { "label": "Lipsticks", "link": "" },
+            { "label": "Fragrances", "link": "" }
+          ]
+        },
+        {
+          "label": "Jewellery",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Fashion Jewellery", "link": "" },
+            { "label": "Fine Jewellery", "link": "" },
+            { "label": "Earrings", "link": "" }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "KIDS",
+      "link": "",
+      "inner_items": [
+        {
+          "label": "Boys Clothing",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "T-Shirts", "link": "" },
+            { "label": "Shirts", "link": "" },
+            { "label": "Shorts", "link": "" },
+            { "label": "Jeans", "link": "" },
+            { "label": "Trousers", "link": "" },
+            { "label": "Clothing Sets", "link": "" },
+            { "label": "Ethnic Wear", "link": "" },
+            { "label": "Party Wear", "link": "" }
+          ]
+        },
+        {
+          "label": "Girls Clothing",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Dresses", "link": "" },
+            { "label": "Tops & T-Shirts", "link": "" },
+            { "label": "Lehenga Choli", "link": "" },
+            { "label": "Kurta Sets", "link": "" },
+            { "label": "Party Wear", "link": "" },
+            { "label": "Jeans, Trousers & Capris", "link": "" },
+            { "label": "Skirts & Shorts", "link": "" },
+            { "label": "Tights & Leggings", "link": "" }
+          ]
+        },
+        {
+          "label": "Footwear",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Casual Shoes", "link": "" },
+            { "label": "Sports Shoes", "link": "" },
+            { "label": "School Shoes", "link": "" },
+            { "label": "Flats", "link": "" },
+            { "label": "Sandals", "link": "" },
+            { "label": "Socks", "link": "" }
+          ]
+        },
+        {
+          "label": "Toys & Games",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Learning & Development", "link": "" },
+            { "label": "Activity Toy", "link": "" },
+            { "label": "Soft Toys", "link": "" }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "HOME & LIVING",
+      "link": "",
+      "inner_items": [
+        {
+          "label": "Bed Linen & Furnishing",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Mattress Protectors", "link": "" },
+            { "label": "Bedding Sets", "link": "" },
+            { "label": "Pillows & Pillow Covers", "link": "" },
+            { "label": "Blankets, Quilts and Dohars", "link": "" },
+            { "label": "Diwan Sets", "link": "" },
+            { "label": "Sofa Cover", "link": "" }
+          ]
+        },
+        {
+          "label": "Flooring",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Carpets", "link": "" },
+            { "label": "Floor Mats & Dhurries", "link": "" },
+            { "label": "Door Mats", "link": "" }
+          ]
+        },
+        {
+          "label": "Bath",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Bath Towels", "link": "" },
+            { "label": "Hand & Face Towels", "link": "" },
+            { "label": "Beach Towels", "link": "" }
+          ]
+        },
+        {
+          "label": "Lamps & Lighting",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Floor Lamps", "link": "" },
+            { "label": "Ceiling Lamps", "link": "" },
+            { "label": "Wall Lamps", "link": "" },
+            { "label": "Table Lamps", "link": "" }
+          ]
+        },
+        {
+          "label": "Home Décor",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Plant & Planters", "link": "" },
+            { "label": "Wall Decor", "link": "" },
+            { "label": "Clocks", "link": "" },
+            { "label": "Mirrors", "link": "" }
+          ]
+        },
+        {
+          "label": "Kitchen & Table",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Table Runners", "link": "" },
+            { "label": "Cups and Mugs", "link": "" },
+            { "label": "Kitchen Storage and Tools", "link": "" }
+          ]
+        },
+        {
+          "label": "Storage",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Bins", "link": "" },
+            { "label": "Hangers, Hooks & Holder", "link": "" },
+            { "label": "Organisers", "link": "" }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "BEAUTY",
+      "link": "",
+      "inner_items": [
+        {
+          "label": "Makeup",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Lipstick", "link": "" },
+            { "label": "Lip Gloss", "link": "" },
+            { "label": "Lip Liner", "link": "" },
+            { "label": "Mascara", "link": "" },
+            { "label": "Eyeliner", "link": "" },
+            { "label": "Kajal", "link": "" },
+            { "label": "Eyeshadows", "link": "" },
+            { "label": "Foundation", "link": "" },
+            { "label": "Primer", "link": "" },
+            { "label": "Concealer", "link": "" },
+            { "label": "Compact", "link": "" },
+            { "label": "Nail Polish", "link": "" }
+          ]
+        },
+        {
+          "label": "Skincare, Bath & Body",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Face Moisturiser", "link": "" },
+            { "label": "Sunscreen", "link": "" },
+            { "label": "Serum", "link": "" },
+            { "label": "Face Wash", "link": "" },
+            { "label": "Lip Balm", "link": "" },
+            { "label": "Body Lotion", "link": "" },
+            { "label": "Body Wash", "link": "" },
+            { "label": "Body Scrub", "link": "" },
+            { "label": "Hand Cream", "link": "" }
+          ]
+        },
+        {
+          "label": "Haircare",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Shampoo", "link": "" },
+            { "label": "Conditioner", "link": "" },
+            { "label": "Hair Cream", "link": "" },
+            { "label": "Hair Oil", "link": "" },
+            { "label": "Hair Accessory", "link": "" }
+          ]
+        },
+        {
+          "label": "Fragrances",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Perfume", "link": "" },
+            { "label": "Deodorant", "link": "" },
+            { "label": "Body Mist", "link": "" }
+          ]
+        },
+        {
+          "label": "Appliances",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Hair Dryer", "link": "" },
+            { "label": "Hair Straightener", "link": "" }
+          ]
+        },
+        {
+          "label": "Men's Grooming",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Trimmers", "link": "" },
+            { "label": "Beard Colour and Oils", "link": "" }
+          ]
+        },
+        {
+          "label": "Beauty Gift & Makeup Set",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Beauty Kit", "link": "" },
+            { "label": "Makeup Kit", "link": "" }
+          ]
+        },
+        {
+          "label": "Wellness & Hygiene",
+          "link": "",
+          "sub_inner_items": []
+        },
+        {
+          "label": "Baby Care",
+          "link": "",
+          "sub_inner_items": []
+        }
+      ]
+    },
+    {
+      "label": "ACCESSORIES",
+      "link": "",
+      "inner_items": [
+        {
+          "label": "Men Accessories",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Wallets", "link": "" },
+            { "label": "Belts", "link": "" },
+            { "label": "Perfumes", "link": "" },
+            { "label": "Deodorants", "link": "" },
+            { "label": "Caps & Hats", "link": "" }
+          ]
+        },
+        {
+          "label": "Women Accessories",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Fashion Jewellery", "link": "" },
+            { "label": "Fine Jewellery", "link": "" },
+            { "label": "Earrings", "link": "" },
+            { "label": "Belts, Scarves & More", "link": "" }
+          ]
+        },
+        {
+          "label": "Kids Accessories",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Bags & Backpack", "link": "" },
+            { "label": "Watches", "link": "" },
+            { "label": "Jewellery & Hair Accessory", "link": "" },
+            { "label": "Sunglasses", "link": "" },
+            { "label": "Caps & Hats", "link": "" }
+          ]
+        },
+        {
+          "label": "Mobile Accessories",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Cases & Covers", "link": "" },
+            { "label": "Screen Protector", "link": "" },
+            { "label": "Chargers & Data Cables", "link": "" }
+          ]
+        },
+        {
+          "label": "Others Accessories",
+          "link": "",
+          "sub_inner_items": [
+            { "label": "Lighting", "link": "" },
+            { "label": "Decor & More", "link": "" },
+            { "label": "Bath & More", "link": "" }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "SALE",
+      "link": "",
+      "inner_items": [
+        {
+          "label": "Men",
+          "link": "",
+          "sub_inner_items": [{ "label": "Demo", "link": "" }]
+        },
+        {
+          "label": "Women",
+          "link": "",
+          "sub_inner_items": [{ "label": "Demo", "link": "" }]
+        },
+        {
+          "label": "Kids",
+          "link": "",
+          "sub_inner_items": [{ "label": "Demo", "link": "" }]
+        },
+        {
+          "label": "Mobile Accessories",
+          "link": "",
+          "sub_inner_items": [{ "label": "Demo", "link": "" }]
+        },
+        {
+          "label": "Others",
+          "link": "",
+          "sub_inner_items": [{ "label": "Demo", "link": "" }]
+        }
+      ]
+    }
+  ]
+}

@@ -1,17 +1,27 @@
+import { useSelector } from "react-redux";
 import AddressBook from "@/components/profile/AddressBook";
 import CouponList from "@/components/profile/CouponList";
 import ProfileDetails from "@/components/ProfileDetail";
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import UserOrders from "@/components/profile/UserOrders";
 
 export default function UserAccount() {
   const location = useLocation();
+  const navigate = useNavigate();
+
   const queryParams = new URLSearchParams(location.search);
   const currentTab = queryParams.get("tab") || "profile";
+  const { user } = useSelector((state) => state.user);
 
   const [activeTab, setActiveTab] = useState(currentTab);
 
+  // 🔐 Redirect if not logged in
+  useEffect(() => {
+    if (!user || !user._id) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
   // 🔁 Update tab when URL query changes
   useEffect(() => {
     setActiveTab(currentTab);

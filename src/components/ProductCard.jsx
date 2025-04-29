@@ -37,7 +37,7 @@ export default function ProductCard({ product, minimal = false }) {
     const createdDate = new Date(product.product_variants?.[0]?.created_at);
     const daysSince =
       (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
-    return daysSince <= 14; // products added within last 14 days
+    return daysSince <= 15; 
   };
 
   const getDiscountPercent = (product) => {
@@ -62,10 +62,13 @@ export default function ProductCard({ product, minimal = false }) {
       ?.filter((attr) => attr.attribute_name === "Color")
       .map((attr) => attr.attribute_value) || [];
 
-  const handleCardClick = () => {
-    if (!product) return;
-    navigate(`/products/${product._id}`);
-  };
+ const handleCardClick = () => {
+   if (!product) return;
+   const slug = `${product.product_name.replace(/\s+/g, "-").toLowerCase()}_${
+     product._id
+   }`;
+   navigate(`/product/${slug}`);
+ };
 
   const handleWishlistClick = async (e) => {
     e.stopPropagation();
@@ -112,10 +115,9 @@ export default function ProductCard({ product, minimal = false }) {
     <>
       <div
         onClick={handleCardClick}
-        className="group relative shadow-sm overflow-hidden hover:shadow-md transition cursor-pointer h-full flex flex-col"
-      >
-        {/* <Toaster position="center" /> */}
+        className="group relative shadow-sm overflow-hidden hover:shadow-md transition cursor-pointer flex flex-col "
 
+      >
         {/* Wishlist Icon */}
         {!minimal && (
           <button
@@ -136,12 +138,22 @@ export default function ProductCard({ product, minimal = false }) {
         {/* Product Image */}
         <div className="relative">
           <img
-            src={hovered ? images[1] : images[0]}
+           src={
+            (hovered && images[1]) ? images[1] :
+            images[0] ? images[0] :
+            "noimg.png"
+          }
             alt={name}
+            onError={(e) => {
+              e.target.onerror = null; // Prevent infinite loop
+              e.target.src = "noimg.png";
+            }}
             onMouseEnter={() => images.length > 1 && setHovered(true)}
-            onMouseLeave={() => images.length > 1 && setHovered(false)}
-            className="w-full h-64 object-contain transition-all duration-300 ease-in-out"
+    onMouseLeave={() => images.length > 1 && setHovered(false)}
+    className="w-full aspect-[3/4] object-cover object-top transition-all duration-300 ease-in-out"  
           />
+{/* change3 */}
+   
 
           {/* Bottom Tags */}
           <div className="absolute bottom-0 left-0 p-2 flex gap-2">
@@ -161,8 +173,8 @@ export default function ProductCard({ product, minimal = false }) {
         </div>
 
         {/* Info */}
-        <div className="p-4 space-y-2 mt-auto border-t-2 border-gray-200">
-          <h3 className="text-base font-semibold text-gray-800 line-clamp-2">
+        <div className="h-[35%] flex flex-col justify-between p-4 border-t-2 border-gray-200">
+          <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 w-[90%]">
             {name}
           </h3>
 

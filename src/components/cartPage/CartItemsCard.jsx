@@ -1,9 +1,17 @@
 import { Card, CardContent } from "@/components/ui/card";
 
-export default function CartItemCard({ item, toggleSelect, updateQty, removeItem, moveToWishlist }) {
+export default function CartItemCard({
+  item,
+  toggleSelect,
+  updateQty,
+  removeItem,
+  moveToWishlist,
+}) {
+  const variant = item.product.product_variant || {};
+  const attributes = variant.attributes || {};
+
   const discountPercentage = Math.round(
-    ((item.product.product_variant.compare_price - item.product.product_variant.price) /
-      item.product.product_variant.compare_price) * 100
+    ((variant.compare_price - variant.price) / variant.compare_price) * 100
   );
 
   return (
@@ -16,7 +24,7 @@ export default function CartItemCard({ item, toggleSelect, updateQty, removeItem
           className="mt-8"
         />
         <img
-          src={item.product.product_variant.image || "/placeholder.jpg"}
+          src={variant.image || "/placeholder.jpg"}
           alt={item.product.product_name}
           className="w-24 h-28 object-cover rounded"
         />
@@ -24,11 +32,29 @@ export default function CartItemCard({ item, toggleSelect, updateQty, removeItem
           <p className="text-xs font-medium text-gray-600">
             {item.product.product_type || "Type"}
           </p>
-          <h3 className="text-sm font-semibold">
-            {item.product.product_name}
-          </h3>
+          <h3 className="text-sm font-semibold">{item.product.product_name}</h3>
 
-          <div className="flex gap-4 mb-2">
+          {/* Size & Color Section */}
+          <div className="text-xs text-gray-600 mt-1">
+            {attributes.Size && (
+              <p>
+                Size: <span className="text-gray-800">{attributes.Size}</span>
+              </p>
+            )}
+            {attributes.Color && (
+              <p>
+                Color: <span className="text-gray-800">{attributes.Color}</span>
+              </p>
+            )}
+            {attributes.Fabric && (
+              <p>
+                Fabric:{" "}
+                <span className="text-gray-800">{attributes.Fabric}</span>
+              </p>
+            )}
+          </div>
+
+          <div className="flex gap-4 mt-2 mb-2">
             <div>
               <label className="text-xs font-medium text-gray-600">Qty:</label>
               <select
@@ -46,9 +72,9 @@ export default function CartItemCard({ item, toggleSelect, updateQty, removeItem
           </div>
 
           <div className="flex items-center gap-2 text-sm">
-            <span className="font-semibold">₹{item.product.product_variant.price}</span>
+            <span className="font-semibold">₹{variant.price}</span>
             <span className="text-gray-500 line-through text-xs">
-              ₹{item.product.product_variant.compare_price}
+              ₹{variant.compare_price}
             </span>
             <span className="text-green-600 text-xs font-medium">
               {discountPercentage}% OFF
@@ -59,7 +85,9 @@ export default function CartItemCard({ item, toggleSelect, updateQty, removeItem
 
           <div className="text-xs text-[#723248] mt-2 flex gap-4">
             <button onClick={() => removeItem(item._id)}>REMOVE</button>
-            <button onClick={() => moveToWishlist(item)}>MOVE TO WISHLIST</button>
+            <button onClick={() => moveToWishlist(item)}>
+              MOVE TO WISHLIST
+            </button>
           </div>
         </div>
       </CardContent>

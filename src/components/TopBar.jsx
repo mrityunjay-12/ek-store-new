@@ -1,14 +1,8 @@
 export default function TopBar() {
     return (
-      <div>
-        {/* Static Bar */}
-        {/* <div className="bg-[#723248] text-white text-sm text-center py-2 px-4 font-semibold"> */}
-          {/* 🎉 Global Shipping For You! | Free Shipping on Order Above ₹999 | Global Shipping Available
-        </div> */}
-  
-        {/* Marquee Bar */}
-        <div className="relative overflow-hidden bg-orange-200 p-2">
-          <div className="marquee whitespace-nowrap font-bold text-2xl text-white">
+      <div >
+        <div className="relative overflow-hidden bg-orange-200 ">
+          <div className="marquee  whitespace-nowrap font-bold text-2xl text-white">
             <span className="mx-8">
               GLOBAL SHIPPING WORLDWIDE
             </span>

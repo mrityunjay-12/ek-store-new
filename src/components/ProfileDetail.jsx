@@ -25,9 +25,11 @@ export default function ProfileDetails() {
   });
 
   useEffect(() => {
-    console.log("User from Redux:", user); // 🔍 Debug log
+    console.log("User from Redux:", user);
 
-    if (user) {
+    if (!user || !user._id) {
+      navigate("/login");
+    } else {
       setFormData({
         fullName: user.name || "",
         email: user.email || "",
@@ -39,7 +41,7 @@ export default function ProfileDetails() {
         address: user.address || "",
       });
     }
-  }, [user]);
+  }, [user, navigate]);
 
   const handleChange = (e) => {
     if (!isEditing) return;
@@ -54,11 +56,16 @@ export default function ProfileDetails() {
 
   return (
     <div className="space-y-8 relative">
-      <h2 className="text-xl font-semibold text-[#723248] mb-4">Profile Details</h2>
+      <h2 className="text-xl font-semibold text-[#723248] mb-4">
+        Profile Details
+      </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="fullName" className="text-sm font-medium text-gray-700 mb-1 block">
+          <Label
+            htmlFor="fullName"
+            className="text-sm font-medium text-gray-700 mb-1 block"
+          >
             Full Name
           </Label>
           <Input
@@ -72,7 +79,10 @@ export default function ProfileDetails() {
         </div>
 
         <div>
-          <Label htmlFor="phone" className="text-sm font-medium text-gray-700 mb-1 block">
+          <Label
+            htmlFor="phone"
+            className="text-sm font-medium text-gray-700 mb-1 block"
+          >
             Mobile Number
           </Label>
           <Input
@@ -86,7 +96,10 @@ export default function ProfileDetails() {
         </div>
 
         <div>
-          <Label htmlFor="email" className="text-sm font-medium text-gray-700 mb-1 block">
+          <Label
+            htmlFor="email"
+            className="text-sm font-medium text-gray-700 mb-1 block"
+          >
             Email ID
           </Label>
           <Input
@@ -100,7 +113,10 @@ export default function ProfileDetails() {
         </div>
 
         <div>
-          <Label htmlFor="gender" className="text-sm font-medium text-gray-700 mb-1 block">
+          <Label
+            htmlFor="gender"
+            className="text-sm font-medium text-gray-700 mb-1 block"
+          >
             Gender
           </Label>
           <Input
@@ -114,7 +130,10 @@ export default function ProfileDetails() {
         </div>
 
         <div>
-          <Label htmlFor="dob" className="text-sm font-medium text-gray-700 mb-1 block">
+          <Label
+            htmlFor="dob"
+            className="text-sm font-medium text-gray-700 mb-1 block"
+          >
             Date of Birth
           </Label>
           <Input
@@ -128,7 +147,10 @@ export default function ProfileDetails() {
         </div>
 
         <div>
-          <Label htmlFor="location" className="text-sm font-medium text-gray-700 mb-1 block">
+          <Label
+            htmlFor="location"
+            className="text-sm font-medium text-gray-700 mb-1 block"
+          >
             Location
           </Label>
           <Input
@@ -142,7 +164,10 @@ export default function ProfileDetails() {
         </div>
 
         <div>
-          <Label htmlFor="altMobile" className="text-sm font-medium text-gray-700 mb-1 block">
+          <Label
+            htmlFor="altMobile"
+            className="text-sm font-medium text-gray-700 mb-1 block"
+          >
             Alternate Mobile
           </Label>
           <Input
@@ -172,11 +197,17 @@ export default function ProfileDetails() {
 
       <div className="mt-6 flex flex-col sm:flex-row gap-4">
         {isEditing ? (
-          <Button onClick={handleSave} className="bg-[#723248] hover:bg-[#5a1e38] text-white">
+          <Button
+            onClick={handleSave}
+            className="bg-[#723248] hover:bg-[#5a1e38] text-white"
+          >
             Save Changes
           </Button>
         ) : (
-          <Button onClick={() => setIsEditing(true)} className="bg-[#723248] hover:bg-[#5a1e38] text-white">
+          <Button
+            onClick={() => setIsEditing(true)}
+            className="bg-[#723248] hover:bg-[#5a1e38] text-white"
+          >
             Edit
           </Button>
         )}
